@@ -1,0 +1,74 @@
+# ====================================================================
+# MyPace · monorepo .gitignore
+# ====================================================================
+
+# ---- macOS ----
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ---- 编译产物（每次 build 时重新生成）----
+build/
+dist/
+*.app
+*.dmg
+
+# 但 site/ 下的 DMG 是发版后人工放进去用于下载分发，必须保留
+!site/*.dmg
+
+# .icns 是 gen_icon.swift 生成的图标资源（非临时产物，必须 commit）
+# 所以 *.icns 不在 ignore 列表里
+
+# ---- Swift / Xcode ----
+.build/
+.swiftpm/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+DerivedData/
+
+# ---- 编译临时文件 ----
+*.o
+*.swiftmodule
+*.swiftdoc
+*.swiftsourceinfo
+
+# ---- 单文件 spike 编译后的二进制（verify_*.swift 编译出的 verify_*）----
+verify/verify_asr
+verify/verify_asr_words
+verify/verify_control
+verify/verify_rec
+verify/verify_spike
+verify/verify_word_playback
+verify/gen_icon
+
+# ---- IDE / 编辑器 ----
+.vscode/
+.idea/
+*.swp
+*.swo
+.cursor/
+
+# ---- 凭证 / 机密（绝对不能 commit！）----
+.secrets.json
+*.secrets
+**/secrets/
+.env
+.env.local
+
+# ---- 用户本地配置 ----
+**/Application Support/
+**/scripts/*.json
+
+# ---- 日志 ----
+*.log
+logs/
+
+# ---- 临时 ----
+tmp/
+*.tmp
+*.bak
+
+# ---- 站点本地预览缓存 ----
+site/.cache/

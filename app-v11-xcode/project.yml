@@ -1,0 +1,47 @@
+# XcodeGen config for MyPace
+# Run: brew install xcodegen && xcodegen generate && open MyPace.xcodeproj
+
+name: MyPace
+options:
+  bundleIdPrefix: ai.mypace
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    DEVELOPMENT_TEAM: ""              # 填你的 Apple Team ID
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_HARDENED_RUNTIME: YES
+
+targets:
+  MyPace:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources
+    info:
+      path: Sources/Info.plist
+      properties:
+        CFBundleName: MyPace
+        CFBundleDisplayName: MyPace
+        CFBundleShortVersionString: "1.0.0"
+        CFBundleVersion: "1"
+        LSMinimumSystemVersion: "14.0"
+        LSApplicationCategoryType: public.app-category.productivity
+        # 隐私权限申明（macOS 必须）
+        NSMicrophoneUsageDescription: "MyPace 需要使用麦克风录制你的练习音频，以便生成节奏映射。"
+        NSScreenCaptureUsageDescription: "MyPace 需要屏幕录制权限，以便把浮动提词器窗口从录制画面中排除。"
+    entitlements:
+      path: Sources/MyPace.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.device.audio-input: true
+        com.apple.security.network.client: true
+        com.apple.security.files.user-selected.read-write: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.mypace.MyPace
+        GENERATE_INFOPLIST_FILE: NO
