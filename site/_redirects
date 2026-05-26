@@ -1,0 +1,3 @@
+# SPA-style fallback not needed (single-page anchors only)
+# Ensure DMG downloads work with trailing slash normalization
+/MyPace-Preview-0.8.0.dmg  /MyPace-Preview-0.8.0.dmg  200

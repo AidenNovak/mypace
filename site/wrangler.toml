@@ -1,0 +1,9 @@
+# Cloudflare Pages · MyPace marketing site
+# Deploy: from repo root →  ./site/deploy.sh
+#         or          →  wrangler pages deploy . --project-name=mypace  (cwd=site/)
+
+name = "mypace"
+compatibility_date = "2026-05-26"
+
+# Static HTML — no build step; this directory IS the output.
+pages_build_output_dir = "."

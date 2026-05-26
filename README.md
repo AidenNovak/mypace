@@ -82,6 +82,32 @@ python3 -m http.server 8765
 open http://localhost:8765/
 ```
 
+### 部署文档站到 Cloudflare Pages
+
+**线上地址：** https://mypace-aaz.pages.dev/
+
+```bash
+cd site
+./deploy.sh
+```
+
+配置说明：
+
+| 文件 | 作用 |
+|---|---|
+| `site/wrangler.toml` | Pages 项目名 `mypace` |
+| `site/_headers` | 缓存策略 + DMG 下载头 |
+| `site/_redirects` | 路由规则 |
+| `site/deploy.sh` | 一键 `wrangler pages deploy` |
+| `.github/workflows/deploy-site.yml` | push 到 `main` 且改 `site/**` 时自动部署（需 GitHub Secrets） |
+
+GitHub Actions 需在 repo Settings → Secrets 添加：
+
+- `CLOUDFLARE_API_TOKEN` — API Token（权限：Account / Cloudflare Pages Edit）
+- `CLOUDFLARE_ACCOUNT_ID` — `8b0a7433cabd0fa631b4c72ca880cd7a`
+
+自定义域名：Cloudflare Dashboard → Workers & Pages → **mypace** → Custom domains。
+
 ### 编译验证脚本
 
 ```bash
