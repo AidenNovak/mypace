@@ -72,3 +72,4 @@ tmp/
 
 # ---- 站点本地预览缓存 ----
 site/.cache/
+site/.wrangler/
