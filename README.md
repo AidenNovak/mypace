@@ -52,6 +52,12 @@ mypace/
 │   ├── verify_word_playback.swift  字级动效回放
 │   └── verify_control.swift        UI 控件实验
 │
+├── archive/            归档目录（不再活跃开发的旧版本和工作区）
+│   ├── MyPace-Swift/     Claude 开发 v1.1 时的临时工作区（源码已合并到 app-v11-xcode）
+│   ├── MyPace-Prototype/ 早期原型
+│   └── mypace-old-prd-backup/  早期 PRD 归档
+│
+├── CHANGELOG.md        版本日志（带日期的完整变更记录）
 ├── .gitignore          排除 build / DMG / 旧二进制 / 凭证
 └── README.md           （本文件）
 ```

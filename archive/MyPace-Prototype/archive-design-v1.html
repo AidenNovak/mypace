@@ -1,0 +1,2775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MyPace · Interaction Design v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* =========================================================
+   MyPace — Design Tokens
+   ========================================================= */
+:root{
+  /* Palette */
+  --bg-cream:        #F1ECDF;
+  --bg-paper:        #E9E1CC;
+  --bg-paper-2:      #DCD0B2;
+  --ink:             #15110B;
+  --ink-2:           #1E1810;
+  --ink-3:           #28201410;
+  --surface:         #FFFFFF;
+  --line:            #D5C9AE;
+  --line-strong:     #B0A382;
+  --line-dim:        #E0D6BC;
+
+  --text:            #1A1611;
+  --text-mute:       #645A4B;
+  --text-faint:      #9C907B;
+  --cream:           #F0E6D2;
+  --cream-dim:       #B8AC93;
+
+  --amber:           #C77514;
+  --amber-bright:    #E89A2E;
+  --amber-soft:      #F3CB7F;
+
+  /* === New orange gradient system (CTA) === */
+  --o-light:         #FFD89A;
+  --o-bright:        #FFB04A;
+  --o-main:          #FF8A1F;
+  --o-deep:          #F26A0E;
+  --o-dark:          #C75510;
+  --o-glow:          rgba(255, 138, 31, 0.45);
+  --o-glow-sm:       rgba(255, 138, 31, 0.20);
+
+  --rec:             #C13629;
+  --rec-bright:      #E14A3B;
+  --sage:            #5A7A52;
+  --sage-bright:     #7CA372;
+
+  --sig-green:       #5A8C5C;
+  --sig-yellow:      #B8881C;
+  --sig-red:         #B83B2E;
+
+  /* Type */
+  --font-display: "Fraunces", "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", "Times New Roman", serif;
+  --font-ui:      "Geist", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", "SF Mono", "Menlo", monospace;
+
+  /* Radii */
+  --r-sm: 6px;
+  --r:    10px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+
+  /* Shadows — warm */
+  --sh-card:    0 1px 0 #FFFFFF80, 0 1px 3px #2A200C12, 0 12px 32px -12px #2A200C22;
+  --sh-window:  0 1px 0 #FFFFFF60, 0 8px 24px -8px #2A200C25, 0 40px 80px -20px #2A200C30;
+  --sh-float:   0 12px 36px -12px #00000060, 0 28px 80px -20px #00000060;
+}
+
+/* =========================================================
+   Base
+   ========================================================= */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg-cream);color:var(--text);font-family:var(--font-ui);font-feature-settings:"ss01","cv11";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{
+  background:
+    radial-gradient(1200px 600px at 15% -10%, #F8F1DE 0%, transparent 60%),
+    radial-gradient(1200px 600px at 90% 10%, #ECDEBA40 0%, transparent 55%),
+    var(--bg-cream);
+  min-height:100vh;
+  padding-bottom:120px;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background-image:
+    radial-gradient(circle at 1px 1px, #2A200C0A 1px, transparent 0);
+  background-size:24px 24px;
+  pointer-events:none;
+  z-index:0;
+}
+.wrap{max-width:1280px;margin:0 auto;padding:0 40px;position:relative;z-index:1}
+
+/* =========================================================
+   Top Nav
+   ========================================================= */
+.top-nav{
+  position:sticky;top:0;z-index:50;
+  background:#F1ECDFEE;
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--line);
+}
+.top-nav-inner{
+  max-width:1280px;margin:0 auto;
+  padding:14px 40px;
+  display:flex;align-items:center;gap:24px;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{
+  width:32px;height:32px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, var(--o-light), var(--o-main) 55%, var(--o-dark));
+  display:grid;place-items:center;
+  font-family:var(--font-display);font-weight:700;font-size:14px;color:#FFFFFF;
+  box-shadow:inset 0 0 0 1px #00000020, inset 0 1px 0 #FFFFFF40, 0 4px 10px -2px var(--o-glow-sm);
+  text-shadow:0 1px 1px #00000030;
+}
+.brand-name{font-family:var(--font-display);font-weight:600;font-size:18px;letter-spacing:-0.01em}
+.brand-meta{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.1em}
+.nav-links{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.nav-links a{
+  font-size:13px;color:var(--text-mute);text-decoration:none;
+  padding:6px 12px;border-radius:6px;font-weight:500;
+  transition:all .15s;
+}
+.nav-links a:hover{background:var(--ink-3);color:var(--text)}
+.nav-links a .num{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);margin-right:6px}
+
+/* =========================================================
+   Hero / Cover
+   ========================================================= */
+.hero{padding:80px 0 60px;position:relative}
+.hero .eyebrow{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--amber);font-weight:600;margin-bottom:32px;
+  display:flex;align-items:center;gap:12px;
+}
+.hero .eyebrow::after{content:"";flex:1;height:1px;background:linear-gradient(to right, var(--amber), transparent);max-width:200px}
+
+.hero h1{
+  font-family:var(--font-display);
+  font-weight:300;
+  font-size:clamp(56px, 9vw, 132px);
+  line-height:0.92;letter-spacing:-0.04em;
+  font-variation-settings:"opsz" 144, "SOFT" 50;
+  color:var(--ink);
+}
+.hero h1 em{
+  font-style:italic;font-weight:400;color:var(--amber);
+  font-variation-settings:"opsz" 144, "SOFT" 100;
+}
+.hero h1 .br{display:block}
+
+.hero-bottom{
+  display:grid;grid-template-columns:1.5fr 1fr;gap:60px;margin-top:48px;align-items:end;
+}
+.hero-desc{
+  font-family:var(--font-display);font-size:22px;line-height:1.5;color:var(--text-mute);
+  font-weight:300;max-width:560px;
+}
+.hero-desc em{color:var(--ink);font-style:italic;font-weight:400}
+.hero-meta{
+  font-family:var(--font-mono);font-size:11px;color:var(--text-mute);
+  border-top:1px solid var(--line);padding-top:16px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.hero-meta .row{display:flex;justify-content:space-between}
+.hero-meta .row span:last-child{color:var(--ink);font-weight:500}
+
+/* =========================================================
+   Principles strip
+   ========================================================= */
+.principles{
+  margin-top:80px;
+  display:grid;grid-template-columns:repeat(4, 1fr);gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  border-radius:var(--r-lg);overflow:hidden;
+}
+.principle{background:var(--bg-cream);padding:24px 22px}
+.principle .n{font-family:var(--font-mono);font-size:11px;color:var(--amber);font-weight:600}
+.principle h4{font-family:var(--font-display);font-size:20px;font-weight:500;margin:6px 0 10px;letter-spacing:-0.01em}
+.principle p{font-size:13px;line-height:1.5;color:var(--text-mute)}
+
+/* =========================================================
+   View Sections
+   ========================================================= */
+.view-section{margin-top:120px;position:relative}
+.view-header{
+  display:grid;grid-template-columns:auto 1fr auto;gap:32px;align-items:end;
+  padding-bottom:24px;margin-bottom:32px;border-bottom:1px solid var(--line);
+}
+.view-num{
+  font-family:var(--font-display);
+  font-size:88px;font-weight:300;color:var(--amber);
+  line-height:0.9;font-variation-settings:"opsz" 144,"SOFT" 100;
+  font-style:italic;
+}
+.view-title h2{
+  font-family:var(--font-display);font-size:42px;font-weight:400;
+  letter-spacing:-0.02em;line-height:1.05;
+  font-variation-settings:"opsz" 144;
+}
+.view-title .sub{
+  font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:0.2em;
+  color:var(--text-faint);margin-top:6px;
+}
+.view-tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:280px}
+.tag{
+  font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;
+  padding:4px 8px;border:1px solid var(--line-strong);border-radius:4px;color:var(--text-mute);
+}
+.tag.hot{
+  background:linear-gradient(135deg, var(--o-bright), var(--o-deep));
+  border-color:transparent;color:#FFFFFF;font-weight:600;
+  box-shadow:0 2px 8px -2px var(--o-glow-sm);
+}
+
+.view-stage{
+  display:grid;grid-template-columns:1fr 240px;gap:24px;
+}
+.view-stage .notes{
+  padding-top:8px;
+}
+.note-block{margin-bottom:24px}
+.note-block h5{font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber);font-weight:600;margin-bottom:8px}
+.note-block ul{list-style:none;padding:0}
+.note-block li{font-size:13px;line-height:1.55;color:var(--text-mute);padding-left:14px;position:relative;margin-bottom:5px}
+.note-block li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:1px;background:var(--line-strong)}
+.note-block li b{color:var(--ink);font-weight:600}
+kbd{font-family:var(--font-mono);font-size:10.5px;padding:2px 6px;background:var(--bg-paper);border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:4px;color:var(--ink)}
+
+/* =========================================================
+   macOS window shell
+   ========================================================= */
+.mac-window{
+  background:var(--surface);
+  border-radius:var(--r-lg);
+  box-shadow:var(--sh-window);
+  overflow:hidden;
+  border:1px solid var(--line);
+}
+.mac-window.dark{background:var(--ink);border-color:#00000060}
+.titlebar{
+  height:36px;display:flex;align-items:center;gap:14px;
+  padding:0 14px;
+  background:linear-gradient(180deg, #F8F3E5 0%, #EFE7CF 100%);
+  border-bottom:1px solid var(--line);
+}
+.mac-window.dark .titlebar{
+  background:linear-gradient(180deg, #221C13 0%, #1A150D 100%);
+  border-bottom:1px solid #00000080;
+}
+.lights{display:flex;gap:6px}
+.lights span{width:11px;height:11px;border-radius:50%}
+.lights .l1{background:#FF5F57;box-shadow:inset 0 0 0 1px #00000020}
+.lights .l2{background:#FEBC2E;box-shadow:inset 0 0 0 1px #00000020}
+.lights .l3{background:#28C840;box-shadow:inset 0 0 0 1px #00000020}
+.tbar-title{
+  font-family:var(--font-mono);font-size:11px;color:var(--text-mute);
+  letter-spacing:0.05em;
+}
+.mac-window.dark .tbar-title{color:#A0937A}
+.tbar-meta{margin-left:auto;font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);display:flex;gap:14px;align-items:center}
+.mac-window.dark .tbar-meta{color:#7E725A}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--rec);box-shadow:0 0 0 3px #C1362930;animation:pulse-dot 1.6s infinite}
+@keyframes pulse-dot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:.7}}
+
+/* =========================================================
+   VIEW 1 — Dashboard
+   ========================================================= */
+.v-dash{
+  display:grid;grid-template-columns:64px 1fr;min-height:680px;
+}
+.sidebar{
+  background:linear-gradient(180deg, #F4EDDD 0%, #ECE2C7 100%);
+  border-right:1px solid var(--line);
+  padding:18px 0;display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.side-mark{
+  width:32px;height:32px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, var(--o-light), var(--o-main) 55%, var(--o-dark));
+  display:grid;place-items:center;color:#FFFFFF;font-weight:700;font-family:var(--font-display);font-size:13px;
+  box-shadow:inset 0 1px 0 #FFFFFF40, 0 4px 10px -2px var(--o-glow-sm);
+  margin-bottom:16px;
+  text-shadow:0 1px 1px #00000030;
+}
+.side-ico{
+  width:36px;height:36px;border-radius:8px;
+  display:grid;place-items:center;color:var(--text-mute);
+  cursor:pointer;position:relative;
+}
+.side-ico:hover{background:#FFFFFF80;color:var(--ink)}
+.side-ico.active{
+  background:linear-gradient(135deg, #FFF1DC, #FFE0B8);
+  color:var(--o-dark);
+  box-shadow:inset 0 0 0 1px #FFCFA0, 0 2px 8px -2px var(--o-glow-sm);
+}
+.side-ico svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5}
+.side-ico .dot{position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--rec)}
+.side-bot{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:6px}
+
+.dash-main{padding:36px 44px;background:linear-gradient(180deg,#FFFFFF 0%, #FBF7EC 100%)}
+.dash-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}
+.dash-greet{display:flex;flex-direction:column}
+.dash-greet .hi{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.2em}
+.dash-greet .who{font-family:var(--font-display);font-size:22px;font-weight:500;margin-top:2px}
+.chip-row{display:flex;gap:8px}
+.chip{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 14px 7px 10px;border-radius:99px;
+  background:#FFFFFF;border:1px solid var(--line);
+  font-size:12.5px;color:var(--ink);font-weight:500;
+  transition:all .15s;cursor:default;
+  box-shadow:0 1px 2px #00000008;
+}
+.chip:hover{border-color:var(--line-strong);box-shadow:0 2px 8px -2px #00000015}
+.chip .chip-ico{
+  width:18px;height:18px;border-radius:50%;
+  display:grid;place-items:center;flex-shrink:0;
+  font-size:10px;font-weight:700;
+}
+.chip .chip-ico.blue{background:linear-gradient(135deg, #6DAEF7, #2D7BD6);color:#FFF}
+.chip .chip-ico.orange{background:linear-gradient(135deg, var(--o-bright), var(--o-deep));color:#FFF}
+.chip .chip-end{
+  margin-left:2px;width:14px;height:14px;border-radius:50%;
+  display:grid;place-items:center;font-size:9px;color:#FFF;
+}
+.chip .chip-end.green{background:var(--sage-bright);box-shadow:0 0 0 3px #7CA37225}
+.chip .chip-end.amber{background:var(--o-main);box-shadow:0 0 0 3px var(--o-glow-sm)}
+/* legacy support */
+.chip .dot-g{width:7px;height:7px;border-radius:50%;background:var(--sage-bright);box-shadow:0 0 0 3px #7CA37230}
+.chip .dot-a{width:7px;height:7px;border-radius:50%;background:var(--o-main)}
+
+.dash-hero{
+  display:grid;grid-template-columns:1.6fr 1fr;gap:24px;margin-bottom:36px;
+}
+.hero-title{
+  font-family:var(--font-display);font-weight:300;font-size:64px;line-height:0.95;letter-spacing:-0.03em;
+  font-variation-settings:"opsz" 144,"SOFT" 50;
+}
+.hero-title em{color:var(--amber);font-style:italic;font-variation-settings:"opsz" 144,"SOFT" 100}
+.hero-title .sm{display:block;font-size:18px;color:var(--text-mute);font-weight:400;margin-top:18px;font-style:normal;letter-spacing:0;font-family:var(--font-ui)}
+
+.cta-stack{display:flex;flex-direction:column;gap:10px;justify-content:flex-end}
+
+/* === NEW: black card with embedded big orange CTA (inspired by reference) === */
+.cta-primary{
+  background:linear-gradient(180deg, var(--ink-2), var(--ink));
+  color:var(--cream);padding:18px;border-radius:18px;border:1px solid #00000050;
+  display:flex;flex-direction:column;gap:14px;cursor:pointer;
+  position:relative;overflow:hidden;
+  box-shadow:
+    inset 0 1px 0 #FFFFFF12,
+    0 12px 28px -10px #1A130880,
+    0 24px 60px -16px var(--o-glow-sm);
+}
+.cta-primary::after{
+  content:"";position:absolute;top:-60px;right:-60px;width:240px;height:240px;
+  background:radial-gradient(circle at center, var(--o-main) 0%, transparent 60%);
+  opacity:.18;pointer-events:none;filter:blur(20px);
+}
+.cta-head{display:flex;align-items:flex-start;gap:14px;padding:10px 8px 0;position:relative;z-index:1}
+.cta-ico{
+  width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  background:#FFFFFF0E;border:1px solid #FFFFFF15;
+  display:grid;place-items:center;color:var(--o-bright);
+}
+.cta-ico svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6}
+.cta-ttl{font-family:var(--font-display);font-size:19px;font-weight:500;color:var(--cream);letter-spacing:-0.005em}
+.cta-desc{font-size:12px;color:#857956;margin-top:3px;font-family:var(--font-ui)}
+.cta-secondary{
+  background:#FFFFFF;border:1px solid var(--line);padding:14px 18px;border-radius:14px;
+  display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .18s;
+}
+.cta-secondary:hover{border-color:var(--o-main);background:#FFFEFA;box-shadow:0 4px 16px -4px var(--o-glow-sm)}
+.cta-secondary .icn{
+  width:38px;height:38px;border-radius:12px;
+  background:linear-gradient(135deg, #FFE7CC, #FFCB94);
+  display:grid;place-items:center;flex-shrink:0;
+  box-shadow:inset 0 1px 0 #FFFFFF80, 0 2px 6px -2px var(--o-glow-sm);
+}
+.cta-secondary .icn svg{width:16px;height:16px;stroke:var(--o-deep);fill:var(--o-deep);stroke-width:1.8}
+.cta-secondary .t{font-weight:500;font-size:13.5px;color:var(--ink)}
+.cta-secondary .s{font-size:11px;color:var(--text-mute);font-family:var(--font-mono);margin-top:2px}
+.cta-secondary .prog{
+  margin-left:auto;font-family:var(--font-mono);font-size:12px;font-weight:600;
+  padding:5px 10px;border-radius:99px;
+  background:linear-gradient(135deg, #FFF1DC, #FFE0B8);
+  color:var(--o-deep);
+  border:1px solid #FFD49A;
+}
+
+.recent-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.recent-head h3{font-family:var(--font-display);font-size:24px;font-weight:500;letter-spacing:-0.01em}
+.recent-head .more{font-family:var(--font-mono);font-size:11px;color:var(--amber);text-transform:uppercase;letter-spacing:0.15em;cursor:pointer}
+
+.script-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:14px}
+.script-card{
+  background:#FFFFFF;border:1px solid var(--line);border-radius:12px;
+  padding:18px 18px 14px;cursor:pointer;transition:all .15s;
+  position:relative;overflow:hidden;
+}
+.script-card:hover{border-color:var(--amber);transform:translateY(-1px);box-shadow:var(--sh-card)}
+.script-card .tag-mini{
+  position:absolute;top:14px;right:14px;
+  font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;
+  padding:3px 7px;border-radius:4px;
+}
+.script-card .tag-mini.mapped{background:#5A7A5215;color:var(--sage);border:1px solid #5A7A5230}
+.script-card .tag-mini.draft{background:#B8881C15;color:var(--sig-yellow);border:1px solid #B8881C30}
+.script-card .tag-mini.recorded{background:#C1362915;color:var(--rec);border:1px solid #C1362930}
+.script-card h4{font-family:var(--font-display);font-size:17px;font-weight:500;letter-spacing:-0.01em;margin-bottom:6px;padding-right:80px}
+.script-card .excerpt{font-size:12.5px;color:var(--text-mute);line-height:1.5;margin-bottom:14px;height:54px;overflow:hidden}
+.script-card .stats{display:flex;gap:14px;font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.08em}
+.script-card .stats b{color:var(--ink);font-weight:500;margin-right:3px}
+
+.dash-bot{
+  margin-top:28px;padding:14px 18px;
+  background:var(--ink);color:var(--cream-dim);border-radius:12px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;
+}
+.dash-bot .lhs{display:flex;align-items:center;gap:18px}
+.dash-bot .led{width:8px;height:8px;border-radius:50%;background:var(--sage-bright);box-shadow:0 0 0 3px #7CA37230, 0 0 12px var(--sage-bright)}
+.dash-bot .sep{color:#3A3122}
+
+/* =========================================================
+   VIEW 2 — Script Editor
+   ========================================================= */
+.v-edit{display:grid;grid-template-columns:1.7fr 1fr;min-height:720px}
+.edit-canvas{background:#FBF6E9;display:flex;flex-direction:column}
+.edit-toolbar{
+  display:flex;align-items:center;gap:4px;padding:10px 22px;
+  border-bottom:1px solid var(--line-dim);background:#F8F1DD;
+}
+.tool-btn{
+  padding:5px 10px;border-radius:6px;font-family:var(--font-mono);font-size:11px;
+  color:var(--text-mute);cursor:pointer;font-weight:500;
+}
+.tool-btn:hover{background:#FFFFFF80;color:var(--ink)}
+.tool-btn.active{background:var(--ink);color:var(--amber-soft)}
+.tool-sep{width:1px;height:16px;background:var(--line);margin:0 6px}
+.tool-spacer{flex:1}
+.tool-info{font-family:var(--font-mono);font-size:11px;color:var(--text-mute)}
+
+.edit-paper{
+  flex:1;padding:48px 64px;overflow-y:auto;max-height:600px;
+  background:
+    linear-gradient(transparent calc(100% - 1px), #2A200C08 calc(100% - 1px)) repeat-y;
+  background-size:100% 38px;
+}
+.edit-paper h1{
+  font-family:var(--font-display);font-size:34px;font-weight:500;letter-spacing:-0.01em;
+  line-height:1.2;margin-bottom:24px;color:var(--ink);
+  font-variation-settings:"opsz" 144;
+}
+.edit-paper p{
+  font-family:var(--font-display);font-size:19px;line-height:38px;color:var(--ink);
+  margin-bottom:0;font-weight:400;letter-spacing:0.005em;
+}
+.edit-paper .break{
+  text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--amber);
+  letter-spacing:0.6em;padding:8px 0;text-transform:uppercase;
+  display:flex;align-items:center;gap:14px;
+}
+.edit-paper .break::before,.edit-paper .break::after{content:"";flex:1;height:1px;background:var(--amber);opacity:.3}
+.edit-paper .caret{
+  display:inline-block;width:2px;height:22px;background:var(--amber);
+  vertical-align:-4px;animation:blink 1s infinite;
+}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+.edit-foot{
+  padding:12px 22px;border-top:1px solid var(--line-dim);background:#F4EAD0;
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--font-mono);font-size:11px;color:var(--text-mute);
+}
+.edit-foot .savestate{display:flex;align-items:center;gap:7px}
+.edit-foot .savestate .d{width:6px;height:6px;border-radius:50%;background:var(--sage-bright)}
+
+.edit-side{background:#F8F3E5;border-left:1px solid var(--line);padding:20px 22px;overflow-y:auto;max-height:720px}
+.side-sect{margin-bottom:24px}
+.side-sect h6{
+  font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:0.18em;
+  color:var(--text-faint);font-weight:600;margin-bottom:14px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.side-sect h6 .collapse{cursor:pointer;color:var(--text-mute)}
+
+.field{margin-bottom:14px}
+.field-label{font-size:12px;color:var(--text-mute);margin-bottom:6px;display:flex;justify-content:space-between}
+.field-label b{font-family:var(--font-mono);color:var(--ink);font-weight:500}
+
+.slider-row{display:flex;align-items:center;gap:12px}
+.slider-row input[type="range"]{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:99px;background:linear-gradient(to right, var(--o-main) 0%, var(--o-main) 50%, var(--bg-paper-2) 50%);outline:none}
+.slider-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#FFF;border:2px solid var(--o-main);cursor:pointer;box-shadow:0 1px 4px var(--o-glow-sm)}
+
+.swatch-row{display:flex;gap:6px}
+.swatch{width:28px;height:28px;border-radius:6px;cursor:pointer;border:1px solid var(--line);position:relative}
+.swatch.sel::after{content:"";position:absolute;inset:-3px;border:1.5px solid var(--amber);border-radius:9px}
+.swatch.c1{background:var(--cream)}
+.swatch.c2{background:#FFFFFF}
+.swatch.c3{background:var(--amber-soft)}
+.swatch.c4{background:#FFB85C}
+.swatch.bg1{background:var(--ink)}
+.swatch.bg2{background:#2A2419}
+.swatch.bg3{background:#000000}
+
+.scroll-modes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.scroll-mode{
+  padding:14px;background:#FFF;border:1px solid var(--line);border-radius:10px;
+  cursor:pointer;position:relative;transition:all .15s;
+}
+.scroll-mode.active{
+  border-color:var(--o-main);
+  background:linear-gradient(180deg,#FFF6E6 0%, #FFFCF5 100%);
+  box-shadow:0 0 0 3px var(--o-glow-sm), 0 4px 14px -4px var(--o-glow-sm);
+}
+.scroll-mode .name{font-weight:500;font-size:13px;display:flex;align-items:center;gap:6px}
+.scroll-mode .name .badge{font-family:var(--font-mono);font-size:9px;color:var(--sage);background:#5A7A5215;padding:2px 5px;border-radius:3px;letter-spacing:0.06em}
+.scroll-mode .desc{font-size:11px;color:var(--text-mute);margin-top:4px;line-height:1.4}
+
+.toggle-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;border-bottom:1px dashed var(--line);
+}
+.toggle-row:last-child{border-bottom:none}
+.toggle-row .t-name{font-size:13px;color:var(--ink)}
+.toggle-row .t-desc{font-size:11px;color:var(--text-faint);margin-top:1px}
+.tog{width:32px;height:18px;border-radius:99px;background:var(--bg-paper-2);position:relative;cursor:pointer;flex-shrink:0;transition:all .15s}
+.tog::after{content:"";position:absolute;width:14px;height:14px;background:#FFF;border-radius:50%;top:2px;left:2px;transition:all .15s;box-shadow:0 1px 2px #00000030}
+.tog.on{background:linear-gradient(135deg, var(--o-bright), var(--o-deep));box-shadow:0 2px 6px -2px var(--o-glow-sm)}
+.tog.on::after{left:16px}
+
+.edit-bottom{
+  grid-column:1 / -1;
+  padding:16px 32px;border-top:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(180deg, #F8F3E5 0%, #F1E8CC 100%);
+}
+.bot-left{display:flex;gap:8px}
+.btn{
+  padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;
+  border:1px solid var(--line-strong);background:#FFF;color:var(--ink);
+  font-family:var(--font-ui);transition:all .18s;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn:hover{background:#FFFFFF;border-color:var(--ink);box-shadow:0 4px 12px -4px #00000018}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--text-mute)}
+.btn.ghost:hover{background:#FFFFFF80;box-shadow:none}
+
+/* === NEW: orange gradient CTA — main button system === */
+.btn-cta{
+  padding:13px 22px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;
+  background:linear-gradient(135deg, var(--o-bright) 0%, var(--o-main) 50%, var(--o-deep) 100%);
+  border:1px solid transparent;color:#FFFFFF;
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--font-ui);transition:all .18s;
+  box-shadow:
+    inset 0 1px 0 #FFFFFF55,
+    inset 0 -1px 0 #00000022,
+    0 4px 12px -2px var(--o-glow),
+    0 14px 32px -10px var(--o-glow-sm);
+  text-shadow:0 1px 1px #00000018;
+  position:relative;
+}
+.btn-cta:hover{transform:translateY(-1px);filter:brightness(1.04);
+  box-shadow:
+    inset 0 1px 0 #FFFFFF60,
+    inset 0 -1px 0 #00000025,
+    0 6px 16px -2px var(--o-glow),
+    0 18px 38px -10px var(--o-glow-sm);
+}
+.btn-cta:active{transform:translateY(0);filter:brightness(0.98)}
+.btn-cta .ico{
+  width:22px;height:22px;border-radius:50%;
+  background:#FFFFFF28;color:#FFFFFF;
+  display:grid;place-items:center;font-size:13px;font-weight:600;
+  backdrop-filter:blur(4px);
+}
+/* large variant — used inside black hero card */
+.btn-cta.lg{
+  width:100%;padding:16px 22px;font-size:15px;justify-content:center;border-radius:14px;
+}
+.btn-cta.lg .ico{width:26px;height:26px;font-size:15px}
+
+/* =========================================================
+   VIEW 3 — Practice Recording
+   ========================================================= */
+.v-prac{
+  background:radial-gradient(ellipse at center top, #2C2417 0%, var(--ink) 70%);
+  color:var(--cream);min-height:600px;
+  display:flex;flex-direction:column;position:relative;
+}
+.prac-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 32px;
+  border-bottom:1px solid #FFFFFF08;
+}
+.prac-top-l{display:flex;align-items:center;gap:14px}
+.prac-rec-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 11px;border-radius:99px;
+  background:#C1362920;border:1px solid #C1362950;
+  font-family:var(--font-mono);font-size:11px;color:var(--rec-bright);font-weight:600;letter-spacing:0.1em;
+}
+.prac-title{font-family:var(--font-display);font-size:15px;color:var(--cream);font-weight:500}
+.prac-shortcuts{
+  font-family:var(--font-mono);font-size:10.5px;color:#857956;letter-spacing:0.08em;display:flex;gap:14px;
+}
+.prac-shortcuts span b{color:var(--cream);font-weight:500}
+
+.prac-stage{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px 100px;text-align:center;gap:14px;position:relative;min-height:280px;
+}
+.prompt-line{font-family:var(--font-display);font-weight:400;line-height:1.45;transition:all .2s}
+.prompt-line.past{color:#3F3624;font-size:22px;font-style:italic}
+.prompt-line.curr{
+  color:var(--amber-bright);font-size:42px;font-weight:500;
+  letter-spacing:-0.01em;
+  text-shadow:0 0 60px #C7751460;
+  animation:breathe 2.4s ease-in-out infinite;
+  position:relative;
+  max-width:780px;
+}
+.prompt-line.curr::before{
+  content:"";position:absolute;left:-36px;top:50%;transform:translateY(-50%);
+  width:12px;height:12px;border-radius:50%;background:var(--rec-bright);
+  box-shadow:0 0 0 4px #C1362930, 0 0 20px var(--rec);
+  animation:pulse-dot 1.4s infinite;
+}
+@keyframes breathe{0%,100%{filter:brightness(1)}50%{filter:brightness(1.15)}}
+.prompt-line.next{color:#8B7F62;font-size:26px}
+.prompt-line.future{color:#594F37;font-size:22px;font-style:italic}
+
+.prac-bottom{
+  padding:20px 32px;
+  background:linear-gradient(180deg, #00000000 0%, #00000050 100%);
+  display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;
+}
+.timecode{font-family:var(--font-mono);font-weight:500;display:flex;align-items:baseline;gap:8px}
+.timecode .cur{font-size:32px;color:var(--cream);letter-spacing:0.02em}
+.timecode .tot{font-size:14px;color:#857956}
+
+.waveform{
+  height:60px;display:flex;align-items:center;gap:2px;
+  padding:0 16px;
+}
+.waveform .bar{
+  width:3px;background:linear-gradient(180deg, var(--amber-bright) 0%, var(--amber) 100%);
+  border-radius:99px;opacity:.8;
+}
+.waveform .bar.past{background:linear-gradient(180deg, #5A4A28 0%, #3F3320 100%);opacity:.7}
+.waveform .bar.head{background:var(--rec-bright);box-shadow:0 0 8px var(--rec);opacity:1;width:3px}
+
+.prac-actions{display:flex;gap:8px;align-items:center}
+.prac-btn{
+  width:46px;height:46px;border-radius:50%;background:#FFFFFF10;border:1px solid #FFFFFF20;
+  color:var(--cream);display:grid;place-items:center;cursor:pointer;transition:all .15s;
+}
+.prac-btn:hover{background:#FFFFFF20}
+.prac-btn svg{width:18px;height:18px;fill:currentColor}
+.prac-btn.end{background:var(--rec);border-color:var(--rec-bright);color:#FFF}
+.prac-btn.end:hover{background:var(--rec-bright)}
+
+.prac-meter{
+  display:flex;align-items:center;gap:18px;
+  font-family:var(--font-mono);font-size:11px;color:#857956;letter-spacing:0.08em;
+}
+.prac-meter .grp{display:flex;align-items:baseline;gap:6px}
+.prac-meter .label{color:#857956;text-transform:uppercase;letter-spacing:0.18em;font-size:10px}
+.prac-meter .val{font-family:var(--font-display);font-size:22px;color:var(--cream);font-weight:400;line-height:1;font-variation-settings:"opsz" 144}
+.prac-meter .val em{color:var(--amber);font-style:italic;font-size:14px}
+.prac-meter .pgbar{width:140px;height:3px;background:#FFFFFF15;border-radius:99px;overflow:hidden}
+.prac-meter .pgbar i{display:block;height:100%;width:38%;background:linear-gradient(to right, var(--amber-bright), var(--amber));border-radius:99px}
+
+/* =========================================================
+   VIEW 4 — Rhythm Editor
+   ========================================================= */
+.v-rhythm{display:grid;grid-template-rows:auto 1fr auto;min-height:740px;background:#FAF5E5}
+.rhythm-head{
+  padding:14px 24px;border-bottom:1px solid var(--line);background:#F4ECD3;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.rhythm-head .lhs{display:flex;align-items:center;gap:14px}
+.rhythm-head h3{font-family:var(--font-display);font-size:18px;font-weight:500;letter-spacing:-0.01em}
+.rhythm-head .meta{font-family:var(--font-mono);font-size:11px;color:var(--text-mute);display:flex;gap:12px}
+.unsaved-badge{
+  font-family:var(--font-mono);font-size:11px;color:#FFFFFF;
+  background:linear-gradient(135deg, var(--o-bright), var(--o-deep));
+  padding:6px 12px;border-radius:99px;font-weight:600;letter-spacing:0.05em;
+  display:inline-flex;align-items:center;gap:7px;
+  box-shadow:inset 0 1px 0 #FFFFFF40, 0 2px 8px -2px var(--o-glow-sm);
+}
+.unsaved-badge .pulse{width:7px;height:7px;border-radius:50%;background:#FFFFFF;box-shadow:0 0 0 3px #FFFFFF40;animation:pulse-dot 1.5s infinite}
+
+.rhythm-body{display:grid;grid-template-columns:1.4fr 1fr;min-height:0}
+
+/* Waveform pane */
+.wave-pane{padding:18px 22px;display:flex;flex-direction:column;gap:14px;border-right:1px solid var(--line);background:linear-gradient(180deg, #FAF5E5, #F1E8CC 100%);overflow:hidden}
+.wave-controls{display:flex;align-items:center;justify-content:space-between}
+.zoom-grp{display:flex;gap:4px;background:#FFF;border:1px solid var(--line);border-radius:8px;padding:3px}
+.zoom-btn{
+  padding:4px 8px;font-family:var(--font-mono);font-size:11px;color:var(--text-mute);cursor:pointer;border-radius:5px;
+}
+.zoom-btn:hover{background:var(--bg-paper)}
+.zoom-btn.active{background:var(--ink);color:var(--cream)}
+.wave-info{font-family:var(--font-mono);font-size:11px;color:var(--text-mute)}
+
+.timebar{
+  display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--text-faint);
+  letter-spacing:0.05em;padding:0 2px;
+  border-bottom:1px solid var(--line);padding-bottom:6px;
+}
+
+.wave-canvas{
+  position:relative;flex:1;background:#FFFEF7;
+  border-radius:10px;border:1px solid var(--line);
+  padding:8px;overflow:hidden;
+}
+.wave-tracks{
+  position:relative;display:flex;align-items:center;gap:1px;height:180px;
+}
+.wave-tracks .bar{
+  flex:1;border-radius:1px;opacity:.85;
+}
+.wave-tracks .bar.s1{background:#5A8C5C}
+.wave-tracks .bar.s2{background:#5A8C5C90}
+.wave-tracks .bar.s3{background:#B8881C}
+.wave-tracks .bar.s4{background:#B83B2E}
+.wave-tracks .bar.s5{background:#5A8C5C}
+.wave-tracks .bar.s6{background:#5A8C5C60}
+
+.wave-playhead{
+  position:absolute;top:0;bottom:0;left:34%;width:2px;background:var(--rec-bright);
+  box-shadow:0 0 12px var(--rec);
+  z-index:2;
+}
+.wave-playhead::before{
+  content:"";position:absolute;top:-4px;left:-5px;width:12px;height:8px;
+  background:var(--rec-bright);clip-path:polygon(0 0, 100% 0, 50% 100%);
+}
+
+.segment-overlay{
+  position:absolute;inset:8px;display:flex;pointer-events:none;
+}
+.segment-overlay .seg{
+  border-right:1px dashed #00000020;height:100%;position:relative;
+}
+.segment-overlay .seg:last-child{border-right:none}
+.segment-overlay .seg .tag{
+  position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);
+  font-family:var(--font-mono);font-size:9px;color:var(--text-faint);white-space:nowrap;
+}
+.segment-overlay .seg.warn{background:linear-gradient(180deg, #B8881C00 0%, #B8881C15 70%, #B8881C25 100%)}
+.segment-overlay .seg.bad{background:linear-gradient(180deg, #B83B2E00 0%, #B83B2E15 70%, #B83B2E25 100%)}
+
+.wave-secondary{
+  display:flex;align-items:center;gap:14px;padding:10px 4px 0;
+  border-top:1px solid var(--line);margin-top:auto;
+  font-family:var(--font-mono);font-size:11px;color:var(--text-mute);
+}
+.legend-dot{display:inline-flex;align-items:center;gap:6px}
+.legend-dot i{width:10px;height:10px;border-radius:2px}
+
+/* Segment list */
+.seg-pane{display:flex;flex-direction:column;min-height:0}
+.seg-pane-head{padding:14px 18px;border-bottom:1px solid var(--line);background:#F4ECD3;display:flex;align-items:center;justify-content:space-between}
+.seg-pane-head .title{font-family:var(--font-display);font-size:15px;font-weight:500}
+.seg-pane-head .count{font-family:var(--font-mono);font-size:11px;color:var(--text-mute)}
+.seg-pane-head .count b{color:var(--sig-red)}
+.seg-list{padding:10px 14px;overflow-y:auto;max-height:560px;display:flex;flex-direction:column;gap:8px;background:#FAF5E5}
+
+.seg-card{
+  background:#FFF;border:1px solid var(--line);border-radius:10px;padding:12px 14px;
+  cursor:pointer;transition:all .15s;position:relative;overflow:hidden;
+}
+.seg-card:hover{border-color:var(--line-strong)}
+.seg-card.sel{border-color:var(--amber);box-shadow:0 0 0 3px #E89A2E25}
+.seg-card.warn{background:linear-gradient(180deg, #FFFDF5 0%, #FFFAE5 100%)}
+.seg-card.bad{background:linear-gradient(180deg, #FFFAF5 0%, #FFEFE9 100%)}
+.seg-card .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;font-family:var(--font-mono);font-size:11px;color:var(--text-faint)}
+.seg-card .top .idx{font-weight:600;color:var(--text-mute)}
+.seg-card .top .time{}
+.seg-card .top .time b{color:var(--ink)}
+.seg-card .top .actions{display:flex;gap:6px;opacity:0;transition:opacity .15s}
+.seg-card:hover .top .actions{opacity:1}
+.seg-card .top .actions span{padding:2px 6px;border-radius:4px;background:var(--bg-paper);cursor:pointer;font-size:10px}
+.seg-card .top .actions span:hover{background:var(--ink);color:var(--cream)}
+.seg-card .body{font-family:var(--font-display);font-size:14.5px;line-height:1.45;color:var(--ink);font-weight:400}
+.seg-card .confbar{
+  display:flex;align-items:center;gap:8px;margin-top:10px;
+  font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);
+}
+.conf-track{flex:1;height:3px;border-radius:99px;background:var(--bg-paper);overflow:hidden}
+.conf-track i{display:block;height:100%;border-radius:99px}
+.conf-good i{background:var(--sig-green);width:92%}
+.conf-warn i{background:var(--sig-yellow);width:64%}
+.conf-bad  i{background:var(--sig-red);width:38%}
+.seg-card.warn .badge,.seg-card.bad .badge{
+  position:absolute;top:0;right:0;
+  padding:3px 8px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.1em;
+  text-transform:uppercase;color:#FFF;font-weight:600;
+  border-bottom-left-radius:8px;
+}
+.seg-card.warn .badge{background:var(--sig-yellow)}
+.seg-card.bad .badge{background:var(--sig-red)}
+
+.rhythm-foot{
+  border-top:1px solid var(--line);
+  padding:14px 24px;background:linear-gradient(180deg, #F4ECD3 0%, #ECDEB8 100%);
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.transport{display:flex;align-items:center;gap:6px}
+.t-btn{
+  width:36px;height:36px;border-radius:8px;background:#FFF;border:1px solid var(--line-strong);
+  display:grid;place-items:center;cursor:pointer;color:var(--ink);
+}
+.t-btn.play{width:44px;height:44px;background:var(--ink);color:var(--amber-bright);border-color:var(--ink)}
+.t-btn svg{width:14px;height:14px;fill:currentColor}
+.speed-grp{display:flex;align-items:center;gap:10px;margin-left:14px;font-family:var(--font-mono);font-size:11px;color:var(--text-mute)}
+.speed-grp input{
+  width:120px;-webkit-appearance:none;appearance:none;height:4px;border-radius:99px;
+  background:linear-gradient(to right, var(--o-main) 0%, var(--o-main) 33%, var(--bg-paper-2) 33%);outline:none;
+}
+.speed-grp input::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:#FFF;border:2px solid var(--o-main);cursor:pointer;
+  box-shadow:0 1px 4px var(--o-glow-sm);
+}
+.speed-grp .val{color:var(--o-deep);font-weight:600}
+.foot-right{display:flex;gap:8px}
+
+/* =========================================================
+   VIEW 5 — Floating Teleprompter
+   ========================================================= */
+.v-float-wrap{
+  background:
+    linear-gradient(135deg, #5A4A28 0%, #2C2417 100%);
+  position:relative;min-height:680px;padding:60px;overflow:hidden;
+}
+.v-float-wrap::before{
+  content:"";position:absolute;inset:0;
+  background-image:
+    radial-gradient(circle at 20% 30%, #C7751415 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, #5A8C5C10 0%, transparent 50%);
+  pointer-events:none;
+}
+.fake-screen{
+  width:100%;height:100%;min-height:560px;
+  border:2px dashed #FFFFFF20;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;
+}
+.fake-screen .label{
+  position:absolute;top:14px;left:14px;
+  font-family:var(--font-mono);font-size:10.5px;color:#FFFFFF40;letter-spacing:0.15em;text-transform:uppercase;
+}
+.fake-screen .speaker{
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, #3F3320, #1A150D);
+  display:grid;place-items:center;
+  font-family:var(--font-display);font-size:72px;color:#3F3320;font-weight:300;font-style:italic;
+  border:1px solid #FFFFFF10;
+  box-shadow:0 30px 80px -20px #00000080;
+}
+.fake-screen .speaker-name{
+  margin-top:18px;font-family:var(--font-display);font-size:18px;color:#FFFFFF50;font-weight:400;
+}
+
+.float-tele{
+  position:absolute;top:32px;right:32px;
+  width:520px;
+  background:#0D0905EE;
+  backdrop-filter:blur(20px);
+  border-radius:16px;border:1px solid #FFFFFF15;
+  box-shadow:var(--sh-float);
+  padding:32px;
+  overflow:hidden;
+}
+.float-tele::after{
+  content:"";position:absolute;bottom:0;left:0;right:0;height:120px;
+  background:linear-gradient(to top, #0D0905 0%, transparent);
+  pointer-events:none;
+}
+.float-controls{
+  position:absolute;top:14px;right:14px;display:flex;gap:6px;
+  opacity:0;transition:opacity .15s;
+}
+.float-tele:hover .float-controls{opacity:1}
+.float-controls .b{
+  width:24px;height:24px;border-radius:6px;background:#FFFFFF10;color:#FFFFFF80;
+  display:grid;place-items:center;cursor:pointer;
+}
+.float-controls .b:hover{background:#FFFFFF20;color:#FFF}
+.float-curr{
+  font-family:var(--font-display);font-weight:500;font-size:36px;line-height:1.4;
+  color:#FFF6E0;letter-spacing:-0.01em;
+  position:relative;
+}
+.float-curr .guideline{
+  position:absolute;bottom:-6px;left:0;right:0;height:1px;background:var(--amber);opacity:.5;
+}
+.float-next{
+  font-family:var(--font-display);font-size:24px;line-height:1.4;
+  color:#FFFFFF50;margin-top:18px;font-style:italic;font-weight:400;
+}
+.float-meta{
+  display:flex;align-items:center;gap:14px;margin-top:24px;
+  font-family:var(--font-mono);font-size:10.5px;color:#FFFFFF40;letter-spacing:0.1em;
+}
+.float-meta .led{width:7px;height:7px;border-radius:50%;background:var(--rec);box-shadow:0 0 8px var(--rec)}
+
+.float-bar{
+  position:absolute;bottom:32px;left:32px;
+  background:#15110BEE;backdrop-filter:blur(16px);
+  border-radius:99px;border:1px solid #FFFFFF15;
+  padding:8px 14px 8px 8px;
+  display:flex;align-items:center;gap:12px;
+  box-shadow:var(--sh-float);
+  font-family:var(--font-mono);font-size:11px;color:var(--cream-dim);
+}
+.float-bar .grip{
+  width:18px;height:32px;background:repeating-linear-gradient(180deg, #FFFFFF30 0 2px, transparent 2px 6px);
+  border-radius:3px;cursor:grab;
+}
+.float-bar .pg{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--cream-dim)}
+.float-bar .pg-track{width:140px;height:3px;background:#FFFFFF15;border-radius:99px;overflow:hidden}
+.float-bar .pg-track i{display:block;height:100%;width:62%;background:linear-gradient(to right, var(--amber-bright), var(--amber));border-radius:99px}
+.float-bar .pg b{color:var(--cream);font-weight:600}
+.float-bar .preview{color:var(--cream);font-style:italic;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font-display);font-size:13px}
+.float-bar .ctrl-grp{display:flex;gap:4px;border-left:1px solid #FFFFFF15;padding-left:12px}
+.float-bar .c-b{
+  width:28px;height:28px;border-radius:50%;background:#FFFFFF10;color:var(--cream);
+  display:grid;place-items:center;cursor:pointer;
+}
+.float-bar .c-b:hover{background:var(--amber);color:var(--ink)}
+.float-bar .c-b svg{width:11px;height:11px;fill:currentColor}
+
+/* =========================================================
+   VIEW 6 — Minimal Control Bar
+   ========================================================= */
+.v-cbar-wrap{
+  background:linear-gradient(135deg, #ECE1C2 0%, #DCC998 100%);
+  padding:50px 50px;min-height:340px;
+  position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:48px;
+}
+.cb-label{font-family:var(--font-mono);font-size:11px;color:var(--text-mute);letter-spacing:0.15em;text-transform:uppercase}
+.cbar{
+  background:#15110B;color:var(--cream);
+  border-radius:99px;padding:6px 6px 6px 18px;
+  display:inline-flex;align-items:center;gap:14px;
+  box-shadow:var(--sh-float);
+  font-family:var(--font-ui);font-size:13px;
+  border:1px solid #00000060;
+}
+.cbar .grip{
+  width:14px;height:24px;
+  background:repeating-linear-gradient(180deg, #FFFFFF30 0 1.5px, transparent 1.5px 5px);
+  border-radius:3px;margin-right:4px;cursor:grab;
+}
+.cbar .pg-num{font-family:var(--font-mono);color:var(--amber-bright);font-weight:600}
+.cbar .pg-bar{width:160px;height:3px;background:#FFFFFF15;border-radius:99px;overflow:hidden}
+.cbar .pg-bar i{display:block;height:100%;width:62%;background:linear-gradient(to right, var(--amber-bright), var(--amber));border-radius:99px}
+.cbar .now{
+  font-family:var(--font-display);font-style:italic;color:#FFFFFF80;
+  max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px;
+}
+.cbar .sep{width:1px;height:20px;background:#FFFFFF15}
+.cbar .grp{display:flex;gap:4px}
+.cbar .b{
+  width:32px;height:32px;border-radius:50%;background:#FFFFFF10;
+  display:grid;place-items:center;cursor:pointer;color:var(--cream);
+}
+.cbar .b:hover{background:var(--amber);color:var(--ink)}
+.cbar .b svg{width:12px;height:12px;fill:currentColor}
+.cbar .speed{font-family:var(--font-mono);font-size:11px;color:var(--amber-bright);min-width:38px;text-align:center;font-weight:600}
+
+.cbar.v2{padding:4px}
+.cbar.v2 .stack{display:flex;flex-direction:column;align-items:flex-start;padding:0 14px}
+.cbar.v2 .stack .pg-num{font-size:11px}
+.cbar.v2 .stack .pg-bar{width:200px;margin-top:4px}
+
+/* =========================================================
+   VIEW 7 — Settings
+   ========================================================= */
+.v-set{display:grid;grid-template-columns:220px 1fr;min-height:700px}
+.set-nav{
+  background:#F4ECD3;border-right:1px solid var(--line);
+  padding:24px 14px;
+}
+.set-nav h6{
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--text-faint);padding:0 12px;margin-bottom:10px;font-weight:600;
+}
+.set-nav-item{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;
+  font-size:13px;color:var(--text-mute);cursor:pointer;margin-bottom:2px;
+}
+.set-nav-item:hover{background:#FFFFFF80;color:var(--ink)}
+.set-nav-item.active{
+  background:linear-gradient(135deg, #FFF1DC, #FFE0B8);
+  color:var(--o-dark);font-weight:600;
+  box-shadow:inset 0 0 0 1px #FFCFA0, 0 2px 8px -2px var(--o-glow-sm);
+}
+.set-nav-item.active .badge-mini{background:linear-gradient(135deg, var(--o-bright), var(--o-deep));color:#FFF}
+.set-nav-item .ic{width:14px;height:14px}
+.set-nav-item .ic svg{stroke:currentColor;fill:none;stroke-width:1.5;width:14px;height:14px}
+.set-nav-item .badge-mini{margin-left:auto;font-family:var(--font-mono);font-size:9.5px;background:var(--o-main);color:#FFFFFF;padding:1px 6px;border-radius:4px;font-weight:600}
+
+.set-body{padding:36px 44px;overflow-y:auto;max-height:700px;background:#FBF6E9}
+.set-body h2{font-family:var(--font-display);font-size:32px;font-weight:500;letter-spacing:-0.01em;margin-bottom:6px}
+.set-body .lead{font-size:14px;color:var(--text-mute);max-width:600px;line-height:1.6;margin-bottom:32px}
+
+/* === NEW: Single hero provider card === */
+.provider-hero{
+  display:grid;grid-template-columns:1.5fr 1fr;
+  background:linear-gradient(180deg, #FFF6E6 0%, #FFFCF5 100%);
+  border:1.5px solid var(--o-main);
+  border-radius:18px;overflow:hidden;margin-bottom:18px;
+  box-shadow:0 0 0 4px var(--o-glow-sm), 0 16px 40px -16px var(--o-glow-sm);
+  position:relative;
+}
+.provider-hero::before{
+  content:"";position:absolute;top:-80px;right:-80px;width:260px;height:260px;
+  background:radial-gradient(circle, var(--o-main) 0%, transparent 60%);
+  opacity:.08;pointer-events:none;filter:blur(20px);
+}
+.ph-left{padding:24px 28px;display:flex;flex-direction:column;gap:14px;position:relative;z-index:1}
+.ph-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:2px}
+.badge{font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:4px 8px;border-radius:5px;font-weight:500;display:inline-flex;align-items:center;gap:5px}
+.badge.rec{
+  background:linear-gradient(135deg, var(--o-bright), var(--o-deep));
+  color:#FFFFFF;font-weight:600;
+  box-shadow:0 2px 6px -2px var(--o-glow-sm);
+}
+.badge.live{background:#5A8C5C18;color:var(--sage);font-weight:600}
+.badge.live i{width:6px;height:6px;border-radius:50%;background:var(--sage-bright);box-shadow:0 0 0 3px #5A7A5230, 0 0 6px var(--sage-bright)}
+.badge.ver{background:var(--bg-paper);color:var(--text-mute);font-family:var(--font-mono);letter-spacing:0.08em}
+
+.ph-title{
+  font-family:var(--font-display);font-size:36px;font-weight:500;letter-spacing:-0.015em;line-height:1;
+  font-variation-settings:"opsz" 144;color:var(--ink);
+}
+.ph-meta{font-family:var(--font-mono);font-size:11px;color:var(--o-dark);text-transform:uppercase;letter-spacing:0.06em;font-weight:500}
+.ph-desc{font-size:13.5px;line-height:1.65;color:var(--text-mute);max-width:480px}
+.ph-desc b{color:var(--ink);font-weight:600}
+
+.ph-stats{
+  display:grid;grid-template-columns:repeat(3, 1fr);gap:18px;
+  margin-top:6px;padding-top:18px;border-top:1px dashed #FFCFA0;
+}
+.ph-stat{display:flex;flex-direction:column;gap:4px}
+.ph-stat-num{
+  font-family:var(--font-display);font-size:30px;font-weight:500;color:var(--o-dark);
+  font-variation-settings:"opsz" 144;line-height:1;letter-spacing:-0.01em;
+}
+.ph-stat-num em{color:var(--o-main);font-style:italic;font-size:18px;margin-left:2px;font-weight:400}
+.ph-stat-lbl{font-family:var(--font-mono);font-size:10px;color:var(--text-mute);letter-spacing:0.08em;text-transform:uppercase}
+
+.ph-right{
+  background:#FFFFFF80;backdrop-filter:blur(8px);
+  border-left:1px solid #FFD49A60;padding:24px;
+  display:flex;flex-direction:column;gap:16px;position:relative;z-index:1;
+}
+.ph-status{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px dashed #FFCFA0}
+.ph-status-led{
+  width:10px;height:10px;border-radius:50%;background:var(--sage-bright);
+  box-shadow:0 0 0 4px #5A7A5225, 0 0 12px var(--sage-bright);flex-shrink:0;
+  animation:pulse-dot 2s infinite;
+}
+.ph-status-ttl{font-weight:600;font-size:14px;color:var(--ink)}
+.ph-status-sub{font-family:var(--font-mono);font-size:10.5px;color:var(--text-mute);margin-top:2px}
+
+.ph-quota{display:flex;flex-direction:column;gap:6px}
+.ph-quota-lbl{font-family:var(--font-mono);font-size:11px;color:var(--text-mute);display:flex;justify-content:space-between;letter-spacing:0.05em}
+.ph-quota-lbl b{color:var(--o-dark);font-weight:600}
+.ph-quota-bar{height:6px;background:#FFE0B888;border-radius:99px;overflow:hidden}
+.ph-quota-bar i{display:block;height:100%;background:linear-gradient(to right, var(--o-bright), var(--o-deep));border-radius:99px;box-shadow:0 0 8px var(--o-glow-sm)}
+.ph-quota-meta{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint)}
+
+.ph-actions{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+.ph-actions .btn{justify-content:flex-start}
+
+.privacy-tip{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px;
+  background:linear-gradient(135deg, #FFFCEF 0%, #FFF8E0 100%);
+  border:1px solid #F0DBA8;border-radius:14px;
+  margin-bottom:24px;
+}
+.priv-ico{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg, #FFE89B, #E1C25C);
+  color:var(--ink);display:grid;place-items:center;
+  font-family:var(--font-display);font-size:18px;font-weight:700;
+  box-shadow:inset 0 1px 0 #FFFFFF60, 0 2px 8px -2px #C9952420;
+}
+.priv-meat{flex:1}
+.priv-ttl{font-weight:600;font-size:13.5px;color:var(--ink)}
+.priv-desc{font-size:12px;color:var(--text-mute);margin-top:3px;line-height:1.5}
+
+.credential-card{
+  background:#FFF;border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:24px;
+}
+.credential-card h4{font-family:var(--font-display);font-size:17px;font-weight:500;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.cred-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.cred-input{display:flex;flex-direction:column;gap:4px}
+.cred-input label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint)}
+.cred-input .inp{
+  background:var(--bg-cream);border:1px solid var(--line);border-radius:8px;padding:10px 12px;
+  font-family:var(--font-mono);font-size:12px;color:var(--ink);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.cred-input .inp .mask{letter-spacing:0.1em;color:var(--text-mute)}
+.cred-input .inp .eye{color:var(--amber);cursor:pointer;font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em}
+
+.action-row{display:flex;gap:10px;margin-top:18px;align-items:center}
+
+.import-card{
+  background:linear-gradient(135deg, #FBF6E9 0%, #F4E9C8 100%);
+  border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+  display:flex;align-items:center;gap:18px;margin-bottom:24px;
+}
+.import-card .ico{
+  width:48px;height:48px;border-radius:12px;
+  background:radial-gradient(circle at 30% 30%, #FFE89B, #E89A2E);
+  display:grid;place-items:center;font-family:var(--font-display);font-size:22px;color:var(--ink);font-weight:700;
+  box-shadow:inset 0 0 0 1px #00000020;
+}
+.import-card .meat{flex:1}
+.import-card .meat h5{font-family:var(--font-display);font-size:16px;font-weight:500;margin-bottom:3px}
+.import-card .meat .d{font-size:12.5px;color:var(--text-mute)}
+.import-card .meat .d b{color:var(--sage);font-weight:600}
+
+/* =========================================================
+   MODALS Section
+   ========================================================= */
+/* ====== Modal system (refined) ====== */
+.modal-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:24px}
+.modal-stage{
+  background:
+    radial-gradient(ellipse at top, #3A2F1E 0%, transparent 60%),
+    radial-gradient(ellipse at center, #2C241790 0%, #15110B 80%);
+  border-radius:var(--r-lg);padding:50px 36px;
+  display:grid;place-items:center;min-height:440px;
+  border:1px solid #00000060;
+  position:relative;overflow:hidden;
+}
+.modal-stage::before{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(circle at 1px 1px, #FFFFFF06 1px, transparent 0);
+  background-size:18px 18px;
+  pointer-events:none;
+}
+.modal-card{
+  background:var(--surface);border-radius:18px;padding:24px 24px 20px;width:100%;max-width:460px;
+  border:1px solid #FFFFFF15;
+  box-shadow:
+    0 1px 0 #FFFFFF60 inset,
+    0 24px 64px -16px #00000080,
+    0 60px 120px -40px #00000060;
+  position:relative;
+}
+.modal-card .head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--line-dim)}
+.modal-card .head .icn{
+  width:48px;height:48px;border-radius:14px;
+  background:linear-gradient(135deg, var(--o-bright), var(--o-deep));
+  display:grid;place-items:center;color:#FFFFFF;
+  font-family:var(--font-display);font-weight:700;font-size:20px;flex-shrink:0;
+  box-shadow:inset 0 1px 0 #FFFFFF50, inset 0 -1px 0 #00000020, 0 6px 16px -4px var(--o-glow-sm);
+  text-shadow:0 1px 1px #00000020;
+}
+.modal-card.warn .head .icn{background:linear-gradient(135deg, #E14A3B, #B82E22);color:#FFF;box-shadow:inset 0 1px 0 #FFFFFF40, 0 6px 16px -4px #C1362930}
+.modal-card.success .head .icn{background:linear-gradient(135deg, var(--sage-bright), var(--sage));color:#FFF;box-shadow:inset 0 1px 0 #FFFFFF40, 0 6px 16px -4px #5A8C5C30}
+.modal-card.info .head .icn{background:linear-gradient(135deg, #E1C25C, #B8881C);color:#FFF;box-shadow:inset 0 1px 0 #FFFFFF40, 0 6px 16px -4px #B8881C30}
+.modal-card .head h3{font-family:var(--font-display);font-size:20px;font-weight:500;letter-spacing:-0.01em;line-height:1.25;margin-top:1px}
+.modal-card .head .sub{font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-faint);margin-top:4px;font-weight:500}
+.modal-card p{font-size:13.5px;line-height:1.65;color:var(--text-mute);margin-bottom:14px}
+.modal-card p b{color:var(--ink);font-weight:600}
+
+/* Info list — warm cream box */
+.modal-card .info-list{
+  background:linear-gradient(180deg, #FBF6E9 0%, #F4EAD0 100%);
+  border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;margin-bottom:16px;
+}
+.modal-card .info-list .row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:6px 0;font-size:12px;font-family:var(--font-mono);color:var(--text-mute);letter-spacing:0.02em;
+  border-bottom:1px dashed #D5C9AE60;
+}
+.modal-card .info-list .row:last-child{border-bottom:none}
+.modal-card .info-list .row b{color:var(--ink);font-weight:600;font-family:var(--font-mono)}
+
+/* Step list (M-02 alignment progress) */
+.step-list{
+  background:linear-gradient(180deg, #FBF6E9 0%, #F4EAD0 100%);
+  border:1px solid var(--line);border-radius:12px;
+  padding:10px 14px;margin-top:14px;
+}
+.step-list .step{
+  display:flex;align-items:center;gap:10px;padding:8px 0;
+  border-bottom:1px dashed #D5C9AE60;
+  font-family:var(--font-mono);font-size:12px;
+}
+.step-list .step:last-child{border-bottom:none}
+.step-list .step .ic{
+  width:18px;height:18px;border-radius:50%;flex-shrink:0;
+  display:grid;place-items:center;font-size:10px;font-weight:700;
+}
+.step-list .step.done .ic{background:var(--sage-bright);color:#FFF;box-shadow:0 0 0 2px #5A7A5225}
+.step-list .step.now .ic{background:linear-gradient(135deg, var(--o-bright), var(--o-deep));color:#FFF;box-shadow:0 0 0 3px var(--o-glow-sm);animation:pulse-dot 1.4s infinite}
+.step-list .step.wait .ic{background:transparent;border:1.5px dashed var(--line-strong);color:var(--text-faint)}
+.step-list .step .lbl{flex:1;color:var(--ink)}
+.step-list .step.wait .lbl{color:var(--text-faint)}
+.step-list .step .val{color:var(--text-mute);font-weight:500}
+.step-list .step.now .val{color:var(--o-deep);font-weight:600}
+
+/* Progress bar */
+.modal-card .progress{
+  margin:16px 0 8px;height:6px;background:#F4EAD0;border-radius:99px;overflow:hidden;position:relative;
+  box-shadow:inset 0 1px 2px #00000010;
+}
+.modal-card .progress i{
+  display:block;height:100%;width:62%;
+  background:linear-gradient(to right, var(--o-bright), var(--o-deep));
+  border-radius:99px;animation:proggrow 3s ease-out infinite;
+  box-shadow:0 0 8px var(--o-glow-sm);position:relative;
+}
+.modal-card .progress i::after{
+  content:"";position:absolute;top:0;right:0;width:24px;height:100%;
+  background:linear-gradient(to right, transparent, #FFFFFF80);
+  animation:shimmer 1.5s infinite;
+}
+@keyframes proggrow{0%{width:25%}50%{width:78%}100%{width:62%}}
+@keyframes shimmer{0%{transform:translateX(-100px);opacity:0}50%{opacity:1}100%{transform:translateX(20px);opacity:0}}
+.modal-card .progress-label{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--text-mute);margin-top:6px;letter-spacing:0.03em}
+.modal-card .progress-label b{color:var(--o-deep);font-weight:600}
+
+/* Actions — never wrap */
+.modal-card .actions{
+  display:flex;gap:8px;margin-top:18px;align-items:center;
+  padding-top:14px;border-top:1px solid var(--line-dim);
+  flex-wrap:nowrap;
+}
+.modal-card .actions .spacer{flex:1}
+.modal-card .actions .btn,
+.modal-card .actions .btn-cta{
+  white-space:nowrap;flex-shrink:0;
+}
+.modal-card .actions .btn{padding:10px 14px;font-size:12.5px}
+.modal-card .actions .btn-cta{padding:11px 18px;font-size:13px;border-radius:10px}
+
+/* Severity stats grid (M-04 low confidence) */
+.severity-grid{
+  display:grid;grid-template-columns:repeat(4, 1fr);gap:8px;margin-bottom:16px;
+}
+.severity-grid .sev{
+  background:linear-gradient(180deg, #FBF6E9, #F4EAD0);
+  border:1px solid var(--line);border-radius:10px;
+  padding:10px 8px;text-align:center;
+}
+.severity-grid .sev .n{font-family:var(--font-display);font-size:22px;font-weight:500;line-height:1;color:var(--ink)}
+.severity-grid .sev.good .n{color:var(--sage)}
+.severity-grid .sev.warn .n{color:var(--sig-yellow)}
+.severity-grid .sev.bad .n{color:var(--sig-red)}
+.severity-grid .sev .l{font-family:var(--font-mono);font-size:9.5px;color:var(--text-mute);text-transform:uppercase;letter-spacing:0.05em;margin-top:4px}
+
+/* Tip line (small note inside modal) */
+.modal-tip{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;
+  background:#FFF8E0;border:1px solid #F0DBA8;border-radius:8px;
+  font-size:11.5px;color:var(--text-mute);line-height:1.5;
+  margin-bottom:6px;
+}
+.modal-tip .lock{
+  width:14px;height:14px;border-radius:50%;background:var(--o-main);color:#FFF;
+  display:grid;place-items:center;font-size:9px;font-weight:700;flex-shrink:0;
+}
+.modal-label{
+  font-family:var(--font-mono);font-size:10.5px;color:var(--text-mute);
+  margin-bottom:14px;letter-spacing:0.15em;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;
+}
+.modal-label::before{
+  content:"";width:24px;height:1px;background:var(--o-main);flex-shrink:0;
+}
+
+/* =========================================================
+   Footer
+   ========================================================= */
+.foot{
+  margin-top:140px;padding-top:36px;border-top:1px solid var(--line);
+  display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end;
+}
+.foot .legend{font-family:var(--font-display);font-size:36px;line-height:1.1;letter-spacing:-0.02em;color:var(--ink);font-weight:300;max-width:600px;font-variation-settings:"opsz" 144}
+.foot .legend em{color:var(--amber);font-style:italic;font-variation-settings:"opsz" 144,"SOFT" 100}
+.foot .meta{font-family:var(--font-mono);font-size:11px;color:var(--text-mute);text-align:right;letter-spacing:0.05em}
+.foot .meta b{color:var(--ink);font-weight:600;display:block;margin-bottom:4px}
+
+/* Small responsive */
+@media (max-width: 880px){
+  .view-stage{grid-template-columns:1fr}
+  .principles{grid-template-columns:repeat(2,1fr)}
+  .hero-bottom{grid-template-columns:1fr}
+  .dash-hero{grid-template-columns:1fr}
+  .v-edit{grid-template-columns:1fr}
+  .rhythm-body{grid-template-columns:1fr}
+  .v-set{grid-template-columns:1fr}
+  .script-grid{grid-template-columns:repeat(2,1fr)}
+  .provider-hero{grid-template-columns:1fr}
+  .ph-stats{grid-template-columns:repeat(2,1fr)}
+  .modal-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================ TOP NAV ============================ -->
+<header class="top-nav">
+  <div class="top-nav-inner">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div>
+        <div class="brand-name">MyPace</div>
+        <div class="brand-meta">Design walkthrough · v1</div>
+      </div>
+    </div>
+    <nav class="nav-links">
+      <a href="#cover"><span class="num">00</span>Cover</a>
+      <a href="#v1"><span class="num">01</span>Dashboard</a>
+      <a href="#v2"><span class="num">02</span>Editor</a>
+      <a href="#v3"><span class="num">03</span>Practice</a>
+      <a href="#v4"><span class="num">04</span>Rhythm</a>
+      <a href="#v5"><span class="num">05</span>Floating</a>
+      <a href="#v6"><span class="num">06</span>Control Bar</a>
+      <a href="#v7"><span class="num">07</span>Settings</a>
+      <a href="#modals"><span class="num">08</span>Modals</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="cover">
+  <div class="eyebrow">A teleprompter that listens before it leads</div>
+  <h1>
+    <span class="br">Pick up</span>
+    <span class="br">the <em>rhythm</em>.</span>
+  </h1>
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      MyPace 不是一个"自动滚动稿件"的工具。<br>
+      它会先听你自然地念一遍 —— 然后让 <em>你</em>，而不是 AI，决定每句的节拍。
+      <br><br>
+      下面是 v1 全部 7 个视图 + Modal 的交互走查。每一帧都填满了真实数据。
+    </p>
+    <div class="hero-meta">
+      <div class="row"><span>Platform</span><span>macOS · 14.0+</span></div>
+      <div class="row"><span>Stack</span><span>SwiftUI · ScreenCaptureKit</span></div>
+      <div class="row"><span>ASR</span><span>火山引擎 · v3 streaming</span></div>
+      <div class="row"><span>Differentiator</span><span>Editable rhythm map</span></div>
+    </div>
+  </div>
+
+  <!-- Design principles -->
+  <div class="principles">
+    <div class="principle">
+      <div class="n">01 / Aesthetic</div>
+      <h4>Editorial × Studio</h4>
+      <p>暖米色稿纸 + 深墨色面板。Fraunces serif 体现"文稿"质感，JetBrains Mono 体现"控制台"精度。</p>
+    </div>
+    <div class="principle">
+      <div class="n">02 / Color</div>
+      <h4>琥珀作信号</h4>
+      <p>琥珀 #C77514 既是品牌色，也是 ASR / 录制 / 节奏标记的信号灯色。红色仅用于"正在录制"。</p>
+    </div>
+    <div class="principle">
+      <div class="n">03 / Hierarchy</div>
+      <h4>当前句即焦点</h4>
+      <p>所有提词器界面都遵循同一规则：上下文 dim，当前句 bright + 呼吸光晕。</p>
+    </div>
+    <div class="principle">
+      <div class="n">04 / Trust</div>
+      <h4>低置信永远可见</h4>
+      <p>不让 AI 偷偷"看起来正确"。所有 ASR 置信度都以波形色块 + 卡片标记暴露给用户。</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================ VIEW 1 — DASHBOARD ============================ -->
+<section class="view-section" id="v1">
+  <div class="view-header">
+    <div class="view-num">01</div>
+    <div class="view-title">
+      <h2>Dashboard</h2>
+      <div class="sub">App 入口 · 最近脚本 · 快速继续</div>
+    </div>
+    <div class="view-tags">
+      <span class="tag hot">主入口</span>
+      <span class="tag">Window · 1080×680</span>
+    </div>
+  </div>
+
+  <div class="view-stage">
+    <div class="mac-window">
+      <div class="titlebar">
+        <div class="lights"><span class="l1"></span><span class="l2"></span><span class="l3"></span></div>
+        <div class="tbar-title">MyPace</div>
+        <div class="tbar-meta">
+          <span>⌘N 新建脚本</span>
+          <span>⌘,  设置</span>
+        </div>
+      </div>
+
+      <div class="v-dash">
+        <!-- left rail -->
+        <aside class="sidebar">
+          <div class="side-mark">M</div>
+          <div class="side-ico active" title="Scripts">
+            <svg viewBox="0 0 24 24"><path d="M5 4h12l2 2v14a0 0 0 0 1 0 0H5z M9 9h6 M9 13h6 M9 17h4"/></svg>
+          </div>
+          <div class="side-ico" title="Templates">
+            <svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg>
+          </div>
+          <div class="side-ico" title="History">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <div class="dot"></div>
+          </div>
+          <div class="side-bot">
+            <div class="side-ico" title="Settings">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3.9a7 7 0 0 0-2-1.2L14 3h-4l-.6 2.6a7 7 0 0 0-2 1.2l-2.3-.9-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-.9c.6.5 1.3.9 2 1.2L10 21h4l.6-2.6a7 7 0 0 0 2-1.2l2.3.9 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/></svg>
+            </div>
+          </div>
+        </aside>
+
+        <!-- main -->
+        <main class="dash-main">
+          <div class="dash-top">
+            <div class="dash-greet">
+              <div class="hi">下午好 · 周四 / 五月 21</div>
+              <div class="who">林老师，准备录什么？</div>
+            </div>
+            <div class="chip-row">
+              <div class="chip">
+                <span class="chip-ico blue">V</span>
+                火山引擎 · 已连接
+                <span class="chip-end green">✓</span>
+              </div>
+              <div class="chip">
+                <span class="chip-ico orange">闪</span>
+                闪电说凭证已导入
+                <span class="chip-end amber">✓</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="dash-hero">
+            <h1 class="hero-title">
+              准备好<br><em>掌控节奏。</em>
+              <span class="sm">把稿子粘进去，先念一遍 —— 节奏由你定，AI 只是工具人。</span>
+            </h1>
+            <div class="cta-stack">
+              <div class="cta-primary">
+                <div class="cta-head">
+                  <div class="cta-ico">
+                    <svg viewBox="0 0 24 24"><path d="M5 4h10l4 4v12a0 0 0 0 1 0 0H5z M15 4v4h4 M9 13h6 M9 17h4"/></svg>
+                  </div>
+                  <div>
+                    <div class="cta-ttl">创建新的提词器脚本</div>
+                    <div class="cta-desc">从空白稿纸开始，打造你的专属节奏</div>
+                  </div>
+                </div>
+                <button class="btn-cta lg">
+                  <span class="ico">+</span>
+                  新建提词器脚本
+                  <span style="opacity:.7;font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;margin-left:6px">⌘N</span>
+                </button>
+              </div>
+              <div class="cta-secondary">
+                <div class="icn">
+                  <svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20" fill="currentColor" stroke="none"/></svg>
+                </div>
+                <div>
+                  <div class="t">继续上次：品牌发布会开场</div>
+                  <div class="s">练习已完成 · 待生成节奏</div>
+                </div>
+                <div class="prog">62%</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="recent-head">
+            <h3>最近脚本</h3>
+            <div class="more">全部 24 个 →</div>
+          </div>
+
+          <div class="script-grid">
+            <div class="script-card">
+              <span class="tag-mini mapped">已映射</span>
+              <h4>三分钟讲清「价值锚定」</h4>
+              <p class="excerpt">很多人以为定价是个数学题。其实它更像一场心理游戏 —— 你卖的不是产品本身，而是它在客户心里值多少 ——</p>
+              <div class="stats"><span><b>682</b>字</span><span><b>04:38</b></span><span><b>3</b>次录制</span></div>
+            </div>
+            <div class="script-card">
+              <span class="tag-mini draft">草稿</span>
+              <h4>品牌发布会开场</h4>
+              <p class="excerpt">各位朋友，欢迎来到 MyPace 1.0 发布会。今天我想用一段非常个人的故事开始 —— 关于我自己为什么会做这个产品 ——</p>
+              <div class="stats"><span><b>1,204</b>字</span><span><b>~7:30</b></span><span>未录制</span></div>
+            </div>
+            <div class="script-card">
+              <span class="tag-mini recorded">已录制</span>
+              <h4>给团队的年终回顾</h4>
+              <p class="excerpt">2025 这一年，对我们整个团队来说，是从十二个人长成五十六个人的一年。我想先讲三件事，再讲一件没讲完的事 ——</p>
+              <div class="stats"><span><b>1,856</b>字</span><span><b>11:20</b></span><span><b>5</b>次录制</span></div>
+            </div>
+            <div class="script-card">
+              <span class="tag-mini mapped">已映射</span>
+              <h4>访谈开场白 · Vol.07</h4>
+              <p class="excerpt">大家好，欢迎收听 Pace Talks。本期我们请到的嘉宾，是一位非常特别的设计师 ——</p>
+              <div class="stats"><span><b>312</b>字</span><span><b>02:15</b></span><span><b>1</b>次录制</span></div>
+            </div>
+            <div class="script-card">
+              <span class="tag-mini draft">草稿</span>
+              <h4>课程模块 02 · 视觉锚点</h4>
+              <p class="excerpt">这一节我们讲视觉锚点。在你打开任何一个网页时，你的眼睛会被三种东西吸引 ——</p>
+              <div class="stats"><span><b>948</b>字</span><span><b>~5:48</b></span><span>未录制</span></div>
+            </div>
+            <div class="script-card">
+              <span class="tag-mini recorded">已录制</span>
+              <h4>给客户的 30 秒演示稿</h4>
+              <p class="excerpt">我用三十秒讲清楚我们到底解决什么问题。问题就一句话 ——</p>
+              <div class="stats"><span><b>198</b>字</span><span><b>00:32</b></span><span><b>8</b>次录制</span></div>
+            </div>
+          </div>
+
+          <div class="dash-bot">
+            <div class="lhs">
+              <span class="led"></span>
+              <span>VOLCENGINE ASR · 已连接</span>
+              <span class="sep">/</span>
+              <span>本月剩余配额 · 4h 32m</span>
+              <span class="sep">/</span>
+              <span>平均延迟 · 187 ms</span>
+            </div>
+            <span>v1.0.0 · 健康</span>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <aside class="notes">
+      <div class="note-block">
+        <h5>核心动作</h5>
+        <ul>
+          <li>主 CTA 是<b>「新建提词器脚本」</b> —— 黑色大按钮 + 琥珀箭头，视觉权重最高</li>
+          <li>「继续上次」直接显示进度百分比，一键回到上次中断的状态</li>
+          <li>侧栏 4 个图标：脚本 / 模板 / 历史 / 设置；历史有红点表示新录制</li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>状态可见性</h5>
+        <ul>
+          <li>顶部 chip：火山引擎连接 + 闪电说凭证状态，永远可见</li>
+          <li>底部黑条：剩余配额 / 本地引擎安装状态，给重度用户的"控制台"信息</li>
+          <li>脚本卡片用<b>「草稿 / 已映射 / 已录制」</b>三种 tag 区分阶段</li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>键盘优先</h5>
+        <ul>
+          <li><kbd>⌘N</kbd> 新建脚本 · <kbd>⌘O</kbd> 打开</li>
+          <li><kbd>⌘1-9</kbd> 直接打开最近 9 个脚本</li>
+          <li><kbd>⌘,</kbd> 偏好设置</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+
+<!-- ============================ VIEW 2 — SCRIPT EDITOR ============================ -->
+<section class="view-section" id="v2">
+  <div class="view-header">
+    <div class="view-num">02</div>
+    <div class="view-title">
+      <h2>Script Editor</h2>
+      <div class="sub">最重要入口 · 录前的全部决策都在这里</div>
+    </div>
+    <div class="view-tags">
+      <span class="tag hot">Most-used</span>
+      <span class="tag">Auto-save</span>
+      <span class="tag">Window · 1280×800</span>
+    </div>
+  </div>
+
+  <div class="view-stage">
+    <div class="mac-window">
+      <div class="titlebar">
+        <div class="lights"><span class="l1"></span><span class="l2"></span><span class="l3"></span></div>
+        <div class="tbar-title">三分钟讲清「价值锚定」 — MyPace</div>
+        <div class="tbar-meta">
+          <span>⌃P 偏好</span>
+          <span>⌃→ 折叠面板</span>
+        </div>
+      </div>
+
+      <div class="v-edit">
+        <!-- LEFT — paper -->
+        <section class="edit-canvas">
+          <div class="edit-toolbar">
+            <span class="tool-btn">H1</span>
+            <span class="tool-btn">H2</span>
+            <span class="tool-sep"></span>
+            <span class="tool-btn"><b>B</b></span>
+            <span class="tool-btn"><i>I</i></span>
+            <span class="tool-sep"></span>
+            <span class="tool-btn">— 断点</span>
+            <span class="tool-btn">⏸ 停顿</span>
+            <span class="tool-btn">⌘ 重音</span>
+            <div class="tool-spacer"></div>
+            <span class="tool-info">Markdown · 已开启</span>
+          </div>
+
+          <div class="edit-paper">
+            <h1>三分钟讲清「价值锚定」</h1>
+
+            <p>很多人以为定价是个数学题。<br>
+            其实它更像一场心理游戏 —— 你卖的不是产品本身，<br>
+            而是它在客户心里值多少。</p>
+
+            <div class="break">— 断 点 —</div>
+
+            <p>我给你举一个反直觉的例子。<br>
+            假设你卖一杯咖啡，标价 30 块。客户大概率觉得贵。</p>
+
+            <p>但如果你把它放在一份 198 块的下午茶套餐里，<br>
+            同样的咖啡，客户连眼都不眨。<br>
+            因为参照系变了。<span class="caret"></span></p>
+
+            <div class="break">— 断 点 —</div>
+
+            <p>所以做定价之前，你要先想：<br>
+            我让客户拿什么跟我比？</p>
+          </div>
+
+          <div class="edit-foot">
+            <span><b>682</b> 字 · 预计 <b>4 分 38 秒</b> （基于上次节奏）</span>
+            <span class="savestate"><span class="d"></span>已自动保存 · 14:32</span>
+          </div>
+        </section>
+
+        <!-- RIGHT — settings -->
+        <aside class="edit-side">
+          <div class="side-sect">
+            <h6>外观 Appearance <span class="collapse">−</span></h6>
+            <div class="field">
+              <div class="field-label">字号 <b>48 pt</b></div>
+              <div class="slider-row"><input type="range" min="18" max="72" value="48"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">文字颜色</div>
+              <div class="swatch-row">
+                <div class="swatch c1 sel"></div>
+                <div class="swatch c2"></div>
+                <div class="swatch c3"></div>
+                <div class="swatch c4"></div>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">背景</div>
+              <div class="swatch-row">
+                <div class="swatch bg1 sel"></div>
+                <div class="swatch bg2"></div>
+                <div class="swatch bg3"></div>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">透明度 <b>92%</b></div>
+              <div class="slider-row"><input type="range" min="40" max="100" value="92"></div>
+            </div>
+          </div>
+
+          <div class="side-sect">
+            <h6>滚动模式 Scroll Mode</h6>
+            <div class="scroll-modes">
+              <div class="scroll-mode active">
+                <div class="name">节奏同步 <span class="badge">已映射</span></div>
+                <div class="desc">按上次练习的节奏自动滚动</div>
+              </div>
+              <div class="scroll-mode">
+                <div class="name">手动滚动</div>
+                <div class="desc">空格暂停 · 方向键微调</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="side-sect">
+            <h6>辅助 Assist</h6>
+            <div class="toggle-row">
+              <div>
+                <div class="t-name">阅读引导线</div>
+                <div class="t-desc">当前句下方一条横线</div>
+              </div>
+              <div class="tog on"></div>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="t-name">下一句预览</div>
+                <div class="t-desc">提前显示下一行（半透）</div>
+              </div>
+              <div class="tog on"></div>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="t-name">段落停顿提示</div>
+                <div class="t-desc">遇到断点时给一个 600ms 缓冲</div>
+              </div>
+              <div class="tog"></div>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="t-name">高对比模式</div>
+                <div class="t-desc">弱光环境下使用</div>
+              </div>
+              <div class="tog"></div>
+            </div>
+          </div>
+
+          <div class="side-sect">
+            <h6>快捷键 Shortcuts <span class="collapse">＋</span></h6>
+          </div>
+        </aside>
+
+        <!-- bottom action bar -->
+        <div class="edit-bottom">
+          <div class="bot-left">
+            <button class="btn ghost">保存为模板</button>
+            <button class="btn ghost">导入 .txt / .md</button>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <button class="btn">直接开始录制</button>
+            <button class="btn-cta">
+              <span class="ico">●</span>
+              开始练习录音
+              <span style="opacity:.6;font-family:var(--font-mono);font-size:11px">⇧⌘R</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="notes">
+      <div class="note-block">
+        <h5>编辑区设计</h5>
+        <ul>
+          <li>用 <b>Fraunces serif</b>，行距 38px，像稿纸而非代码</li>
+          <li>背景画极淡的水平线，强化"打字稿"的隐喻</li>
+          <li>断点 <code>---</code> 自动渲染为"— 断点 —"装饰条</li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>右侧面板分组</h5>
+        <ul>
+          <li><b>外观</b>：影响录制时的提词器视觉</li>
+          <li><b>滚动模式</b>：节奏同步在"已有映射"时高亮 + badge</li>
+          <li><b>辅助</b>：阅读引导线/预览/停顿/高对比 全开关</li>
+          <li>整个面板可折叠，给重度用户更大的稿纸</li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>双 CTA 逻辑</h5>
+        <ul>
+          <li><b>主</b> · 开始练习录音 ── 琥珀大按钮 + <kbd>⇧⌘R</kbd></li>
+          <li><b>次</b> · 直接开始录制 ── 灰色（无节奏映射时启用）</li>
+          <li>空脚本时主按钮置灰 + tooltip 提示</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+
+<!-- ============================ VIEW 3 — PRACTICE RECORDING ============================ -->
+<section class="view-section" id="v3">
+  <div class="view-header">
+    <div class="view-num">03</div>
+    <div class="view-title">
+      <h2>Practice Recording</h2>
+      <div class="sub">第一次念稿 · 系统在后台采集节奏</div>
+    </div>
+    <div class="view-tags">
+      <span class="tag hot">沉浸式</span>
+      <span class="tag">Full-screen</span>
+      <span class="tag">⌨ Space / R / Esc</span>
+    </div>
+  </div>
+
+  <div class="view-stage">
+    <div class="mac-window dark">
+      <div class="titlebar">
+        <div class="lights"><span class="l1"></span><span class="l2"></span><span class="l3"></span></div>
+        <div class="tbar-title" style="color:#A0937A">练习模式 · 三分钟讲清「价值锚定」</div>
+        <div class="tbar-meta">
+          <span class="live-dot"></span>
+          <span>REC</span>
+          <span>·</span>
+          <span>VOLCENGINE</span>
+        </div>
+      </div>
+
+      <div class="v-prac">
+        <!-- top bar -->
+        <div class="prac-top">
+          <div class="prac-top-l">
+            <div class="prac-rec-badge"><span style="width:7px;height:7px;border-radius:50%;background:var(--rec-bright);box-shadow:0 0 8px var(--rec)"></span>RECORDING</div>
+            <div class="prac-title">三分钟讲清「价值锚定」 · 练习 #02</div>
+          </div>
+          <div class="prac-meter">
+            <div class="grp">
+              <span class="label">段落</span>
+              <span class="val">3<em>/8</em></span>
+            </div>
+            <div class="grp">
+              <span class="label">进度</span>
+              <span class="val">38<em>%</em></span>
+              <span class="pgbar"><i></i></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- stage -->
+        <div class="prac-stage">
+          <div class="prompt-line past">很多人以为定价是个数学题。</div>
+          <div class="prompt-line past">其实它更像一场心理游戏 ——</div>
+          <div class="prompt-line curr">你卖的不是产品本身，而是它在客户心里值多少。</div>
+          <div class="prompt-line next">我给你举一个反直觉的例子。</div>
+          <div class="prompt-line future">假设你卖一杯咖啡，标价 30 块。</div>
+        </div>
+
+        <!-- shortcut hint above bottom -->
+        <div style="text-align:center;font-family:var(--font-mono);font-size:10.5px;color:#594F37;letter-spacing:0.15em;padding-bottom:8px">
+          <span style="margin:0 12px"><b style="color:#A0937A">Space</b> 暂停</span>
+          <span style="margin:0 12px"><b style="color:#A0937A">R</b> 重录此句</span>
+          <span style="margin:0 12px"><b style="color:#A0937A">↑↓</b> 跳转</span>
+          <span style="margin:0 12px"><b style="color:#A0937A">Esc</b> 结束</span>
+        </div>
+
+        <!-- bottom -->
+        <div class="prac-bottom">
+          <div class="timecode">
+            <span class="cur">02:14</span>
+            <span class="tot">/ ~05:30</span>
+          </div>
+
+          <div class="waveform" id="prac-wave">
+            <!-- bars injected by JS -->
+          </div>
+
+          <div class="prac-actions">
+            <div class="prac-btn" title="重录此句 (R)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+            </div>
+            <div class="prac-btn" title="暂停 (Space)">
+              <svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+            </div>
+            <div class="prac-btn end" title="结束并对齐 (Esc)">
+              <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="notes">
+      <div class="note-block">
+        <h5>视觉焦点规则</h5>
+        <ul>
+          <li>当前句 <b>48px</b> 琥珀色 + <b>呼吸光晕</b>，左侧红色脉冲 LED</li>
+          <li>上下文 4 行：past dim / next half / future faint</li>
+          <li>串行阅读体验：眼睛沿同一中心线下移</li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>实时反馈</h5>
+        <ul>
+          <li>底部波形：暖色（已念）→ 红色 playhead → 灰色（未念）</li>
+          <li>右侧大字进度 <b>38 %</b> · 段落 <b>3/8</b>，余光可看见</li>
+          <li>分贝太低/没声音 → 波形变细 + tooltip 提示</li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>结束后</h5>
+        <ul>
+          <li>按 <kbd>Esc</kbd> → 进入"对齐中" loading 弹窗（见 Modal #2）</li>
+          <li>对齐完成自动跳转到 <b>Rhythm Editor</b>（View 04）</li>
+          <li>对齐失败 → 友好提示，可一键退化为手动模式</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+
+<!-- ============================ VIEW 4 — RHYTHM EDITOR ============================ -->
+<section class="view-section" id="v4">
+  <div class="view-header">
+    <div class="view-num">04</div>
+    <div class="view-title">
+      <h2>Rhythm Editor</h2>
+      <div class="sub">差异化核心 · 节奏映射可被人手修正</div>
+    </div>
+    <div class="view-tags">
+      <span class="tag hot">差异化</span>
+      <span class="tag">Waveform · Editable</span>
+      <span class="tag">Confidence-aware</span>
+    </div>
+  </div>
+
+  <div class="view-stage">
+    <div class="mac-window">
+      <div class="titlebar">
+        <div class="lights"><span class="l1"></span><span class="l2"></span><span class="l3"></span></div>
+        <div class="tbar-title">节奏映射 · 三分钟讲清「价值锚定」</div>
+        <div class="tbar-meta">
+          <span>⌘Z 撤销</span>
+          <span>Space 试播</span>
+          <span>⌘S 保存</span>
+        </div>
+      </div>
+
+      <div class="v-rhythm">
+        <!-- HEAD -->
+        <div class="rhythm-head">
+          <div class="lhs">
+            <h3>节奏映射 · Practice #02</h3>
+            <div class="meta">
+              <span>由 VOLCENGINE ASR 生成 · 14:48</span>
+              <span>·</span>
+              <span>耗时 4.2s</span>
+            </div>
+          </div>
+          <div class="unsaved-badge"><span class="pulse"></span>7 处未保存修改</div>
+        </div>
+
+        <!-- BODY -->
+        <div class="rhythm-body">
+          <!-- waveform -->
+          <section class="wave-pane">
+            <div class="wave-controls">
+              <div class="zoom-grp">
+                <span class="zoom-btn">−</span>
+                <span class="zoom-btn active">100%</span>
+                <span class="zoom-btn">+</span>
+                <span class="zoom-btn">适合屏幕</span>
+              </div>
+              <div class="wave-info">采样率 16 kHz · 单声道 · 5:30 总时长</div>
+            </div>
+
+            <div class="timebar">
+              <span>00:00</span><span>00:30</span><span>01:00</span><span>01:30</span>
+              <span>02:00</span><span>02:30</span><span>03:00</span>
+            </div>
+
+            <div class="wave-canvas">
+              <div class="wave-tracks" id="rhythm-wave">
+                <!-- bars injected by JS -->
+              </div>
+              <div class="segment-overlay">
+                <div class="seg" style="flex:1"><span class="tag">S1</span></div>
+                <div class="seg" style="flex:.9"><span class="tag">S2</span></div>
+                <div class="seg warn" style="flex:.8"><span class="tag">S3 ⚠</span></div>
+                <div class="seg" style="flex:1.2"><span class="tag">S4</span></div>
+                <div class="seg bad" style="flex:.7"><span class="tag">S5 ✕</span></div>
+                <div class="seg" style="flex:1.1"><span class="tag">S6</span></div>
+                <div class="seg warn" style="flex:.9"><span class="tag">S7 ⚠</span></div>
+                <div class="seg" style="flex:1"><span class="tag">S8</span></div>
+              </div>
+              <div class="wave-playhead"></div>
+            </div>
+
+            <div class="wave-secondary">
+              <span class="legend-dot"><i style="background:#5A8C5C"></i>高置信</span>
+              <span class="legend-dot"><i style="background:#B8881C"></i>需复核</span>
+              <span class="legend-dot"><i style="background:#B83B2E"></i>低置信</span>
+              <span style="margin-left:auto">右键拖拽 · 调整句子边界</span>
+            </div>
+          </section>
+
+          <!-- segments -->
+          <section class="seg-pane">
+            <div class="seg-pane-head">
+              <div class="title">19 个句子</div>
+              <div class="count"><b>3</b> 个需复核 · 1 个低置信</div>
+            </div>
+            <div class="seg-list">
+              <div class="seg-card">
+                <div class="top">
+                  <span class="idx">01</span>
+                  <span class="time"><b>00:00</b> — 00:04</span>
+                  <span class="actions"><span>▶</span><span>合并</span><span>↔</span></span>
+                </div>
+                <div class="body">很多人以为定价是个数学题。</div>
+                <div class="confbar"><span class="conf-track conf-good"><i></i></span>92%</div>
+              </div>
+
+              <div class="seg-card sel">
+                <div class="top">
+                  <span class="idx">02</span>
+                  <span class="time"><b>00:04</b> — 00:09</span>
+                  <span class="actions"><span>▶</span><span>合并</span><span>↔</span></span>
+                </div>
+                <div class="body">其实它更像一场心理游戏 ——</div>
+                <div class="confbar"><span class="conf-track conf-good"><i></i></span>88%</div>
+              </div>
+
+              <div class="seg-card warn">
+                <span class="badge">需复核</span>
+                <div class="top">
+                  <span class="idx">03</span>
+                  <span class="time"><b>00:09</b> — 00:15</span>
+                  <span class="actions"><span>▶</span><span>编辑</span></span>
+                </div>
+                <div class="body">你卖的不是产品本身，而是它在客户心里 <i style="color:var(--sig-yellow);font-style:normal">[值多少 / 直多少]</i></div>
+                <div class="confbar"><span class="conf-track conf-warn"><i></i></span>64%</div>
+              </div>
+
+              <div class="seg-card">
+                <div class="top">
+                  <span class="idx">04</span>
+                  <span class="time"><b>00:15</b> — 00:21</span>
+                  <span class="actions"><span>▶</span><span>合并</span></span>
+                </div>
+                <div class="body">我给你举一个反直觉的例子。</div>
+                <div class="confbar"><span class="conf-track conf-good"><i></i></span>91%</div>
+              </div>
+
+              <div class="seg-card bad">
+                <span class="badge">低置信</span>
+                <div class="top">
+                  <span class="idx">05</span>
+                  <span class="time"><b>00:21</b> — 00:24</span>
+                  <span class="actions"><span>▶</span><span>编辑</span><span>合并</span></span>
+                </div>
+                <div class="body" style="color:var(--sig-red)">[?? — 此段音频信噪比较低，建议手动编辑]</div>
+                <div class="confbar"><span class="conf-track conf-bad"><i></i></span>38%</div>
+              </div>
+
+              <div class="seg-card">
+                <div class="top">
+                  <span class="idx">06</span>
+                  <span class="time"><b>00:24</b> — 00:30</span>
+                  <span class="actions"><span>▶</span><span>合并</span></span>
+                </div>
+                <div class="body">但如果你把它放在一份 198 块的下午茶套餐里，</div>
+                <div class="confbar"><span class="conf-track conf-good"><i></i></span>94%</div>
+              </div>
+
+              <div class="seg-card warn">
+                <span class="badge">需复核</span>
+                <div class="top">
+                  <span class="idx">07</span>
+                  <span class="time"><b>00:30</b> — 00:35</span>
+                  <span class="actions"><span>▶</span><span>编辑</span></span>
+                </div>
+                <div class="body">同样的咖啡，<i style="color:var(--sig-yellow);font-style:normal">客户连眼都不眨</i>。</div>
+                <div class="confbar"><span class="conf-track conf-warn"><i></i></span>71%</div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- FOOT -->
+        <div class="rhythm-foot">
+          <div class="transport">
+            <div class="t-btn"><svg viewBox="0 0 24 24"><path d="M4 4h2v16H4z M8 12l12-8v16z"/></svg></div>
+            <div class="t-btn play"><svg viewBox="0 0 24 24"><polygon points="7,5 19,12 7,19"/></svg></div>
+            <div class="t-btn"><svg viewBox="0 0 24 24"><path d="M18 4h2v16h-2z M16 12L4 4v16z"/></svg></div>
+            <div class="speed-grp">
+              <span>速度</span>
+              <input type="range" min="50" max="200" value="100">
+              <span class="val">1.0×</span>
+            </div>
+            <button class="btn ghost" style="margin-left:8px">试播此句</button>
+            <button class="btn ghost">试播全部</button>
+          </div>
+          <div class="foot-right">
+            <button class="btn">丢弃修改</button>
+            <button class="btn-cta">
+              <span class="ico">↑</span>
+              保存并应用
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="notes">
+      <div class="note-block">
+        <h5>波形 = 真相</h5>
+        <ul>
+          <li>句子分割线可拖拽，每个 segment 都有独立颜色</li>
+          <li>低置信句子在波形上"染红"，扫一眼就知道哪里要看</li>
+          <li>红色 playhead 与右侧卡片<b>双向联动</b></li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>卡片信号系统</h5>
+        <ul>
+          <li>绿条 ≥ 80% 高置信 / 黄条 ≥ 50% 需复核 / 红条 &lt; 50% 低置信</li>
+          <li>需复核：括号内列出 ASR 给的备选词 <code>[值多少 / 直多少]</code></li>
+          <li>低置信：直接显示 <code>[??]</code> + 引导手动编辑</li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>未保存提示</h5>
+        <ul>
+          <li>顶部琥珀 chip "<b>7 处未保存修改</b>"，关闭时强提示</li>
+          <li>底部 <b>保存并应用</b>（主） / 丢弃修改（次）</li>
+          <li><kbd>⌘Z</kbd> 撤销支持到对齐刚生成时的版本</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+
+<!-- ============================ VIEW 5 — FLOATING TELEPROMPTER ============================ -->
+<section class="view-section" id="v5">
+  <div class="view-header">
+    <div class="view-num">05</div>
+    <div class="view-title">
+      <h2>Floating Teleprompter</h2>
+      <div class="sub">正式录屏时的窗口 · 极简 · ScreenCaptureKit 排除</div>
+    </div>
+    <div class="view-tags">
+      <span class="tag hot">不被录到</span>
+      <span class="tag">Always-on-top</span>
+      <span class="tag">Resizable</span>
+    </div>
+  </div>
+
+  <div class="view-stage">
+    <div class="mac-window">
+      <div class="titlebar">
+        <div class="lights"><span class="l1"></span><span class="l2"></span><span class="l3"></span></div>
+        <div class="tbar-title">桌面录屏中 · 提词器窗口已对相机不可见</div>
+        <div class="tbar-meta"><span class="live-dot"></span><span>SCREEN REC</span></div>
+      </div>
+
+      <div class="v-float-wrap">
+        <div class="fake-screen">
+          <div class="label">屏幕共享中 · 1920 × 1080 · 30fps</div>
+          <div class="speaker">林</div>
+          <div class="speaker-name">主讲人画面</div>
+        </div>
+
+        <!-- floating teleprompter (top right) -->
+        <div class="float-tele">
+          <div class="float-controls">
+            <div class="b">−</div>
+            <div class="b">▢</div>
+            <div class="b">×</div>
+          </div>
+          <div class="float-curr">
+            你卖的不是产品本身，<br>
+            而是它在客户心里值多少。
+            <div class="guideline"></div>
+          </div>
+          <div class="float-next">
+            我给你举一个反直觉的例子。
+          </div>
+          <div class="float-meta">
+            <span class="led"></span>
+            <span>REC · 02:14 / 05:30</span>
+            <span>句 03 / 19</span>
+          </div>
+        </div>
+
+        <!-- floating control bar (bottom) -->
+        <div class="float-bar">
+          <div class="grip"></div>
+          <div class="pg">
+            <span><b>62</b>%</span>
+            <span class="pg-track"><i></i></span>
+          </div>
+          <div class="preview">我给你举一个反直觉的例子。</div>
+          <div class="ctrl-grp">
+            <div class="c-b" title="速度 -"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></div>
+            <div class="c-b" title="暂停"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></div>
+            <div class="c-b" title="速度 +"><svg viewBox="0 0 24 24"><path d="M12 5v14 M5 12h14"/></svg></div>
+            <div class="c-b" title="跳下一段"><svg viewBox="0 0 24 24"><polygon points="4,5 14,12 4,19"/><rect x="16" y="5" width="2" height="14"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="notes">
+      <div class="note-block">
+        <h5>极简 = 不抢注意力</h5>
+        <ul>
+          <li>只有 <b>当前行</b>（大字 + 引导线） + <b>下一行</b>（斜体小字）</li>
+          <li>3 秒无鼠标 → 右上控件全部隐藏，只剩文字</li>
+          <li>背景半透深色 + 模糊，叠在画面上不晃眼</li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>录制不可见</h5>
+        <ul>
+          <li>调用 <code>SCContentFilter excludingWindows</code> 排除自己</li>
+          <li>常驻最顶层 · 可拖动 · 可调大小</li>
+          <li>关闭独占屏幕，让主播随时切到 PPT</li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>呼吸式高亮</h5>
+        <ul>
+          <li>当前行每 2.4s 一个轻微 brightness 起伏</li>
+          <li>不是"跳"，是"呼吸"——避免阅读被打断</li>
+          <li>下方引导线 1px 琥珀色，作"视线落点"</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+
+<!-- ============================ VIEW 6 — MINIMAL CONTROL BAR ============================ -->
+<section class="view-section" id="v6">
+  <div class="view-header">
+    <div class="view-num">06</div>
+    <div class="view-title">
+      <h2>Minimal Control Bar</h2>
+      <div class="sub">录制时常驻的"小遥控器"</div>
+    </div>
+    <div class="view-tags">
+      <span class="tag">Floating · Draggable</span>
+      <span class="tag">Two layouts</span>
+    </div>
+  </div>
+
+  <div class="view-stage">
+    <div class="mac-window">
+      <div class="titlebar">
+        <div class="lights"><span class="l1"></span><span class="l2"></span><span class="l3"></span></div>
+        <div class="tbar-title">两种布局 · pill 模式（默认） / stack 模式</div>
+        <div class="tbar-meta"><span>Drag handle 左 · 控件右</span></div>
+      </div>
+
+      <div class="v-cbar-wrap">
+
+        <div>
+          <div class="cb-label" style="margin-bottom:14px;text-align:center">─── Pill mode · 默认布局 ───</div>
+          <div class="cbar">
+            <div class="grip"></div>
+            <div class="pg"><span class="pg-num">62%</span><span class="pg-bar"><i></i></span></div>
+            <div class="now">"我给你举一个反直觉的例子。"</div>
+            <div class="sep"></div>
+            <div class="grp">
+              <div class="b" title="速度 -"><svg viewBox="0 0 24 24"><path d="M5 12h14" stroke="currentColor" stroke-width="2" fill="none"/></svg></div>
+              <span class="speed">1.0×</span>
+              <div class="b" title="速度 +"><svg viewBox="0 0 24 24"><path d="M12 5v14 M5 12h14" stroke="currentColor" stroke-width="2" fill="none"/></svg></div>
+            </div>
+            <div class="sep"></div>
+            <div class="grp">
+              <div class="b"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></div>
+              <div class="b"><svg viewBox="0 0 24 24"><polygon points="4,5 14,12 4,19"/><rect x="16" y="5" width="2" height="14"/></svg></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="cb-label" style="margin-bottom:14px;text-align:center">─── Stack mode · 更紧凑 ───</div>
+          <div class="cbar v2">
+            <div class="grip" style="margin-left:8px"></div>
+            <div class="stack">
+              <span class="pg-num">句 12 / 19 · 62%</span>
+              <span class="pg-bar"><i></i></span>
+            </div>
+            <div class="sep"></div>
+            <div class="grp">
+              <div class="b"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></div>
+              <span class="speed">1.0×</span>
+              <div class="b"><svg viewBox="0 0 24 24"><polygon points="4,5 14,12 4,19"/><rect x="16" y="5" width="2" height="14"/></svg></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <aside class="notes">
+      <div class="note-block">
+        <h5>不抢镜的设计哲学</h5>
+        <ul>
+          <li>所有按钮都是<b>圆形微缩款</b>，避免在桌面上显眼</li>
+          <li>仅在 hover 时显示 tooltip</li>
+          <li>默认透明度 90%，与桌面背景融合</li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>关键控件</h5>
+        <ul>
+          <li>实时进度 · 当前句简短预览 · 速度 ± · 暂停 · 跳下一段</li>
+          <li>速度 <kbd>−</kbd> <kbd>+</kbd> 步进 0.05 倍</li>
+          <li>双击 grip 把控制条<b>吸附到屏幕顶/底边</b></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+
+<!-- ============================ VIEW 7 — SETTINGS ============================ -->
+<section class="view-section" id="v7">
+  <div class="view-header">
+    <div class="view-num">07</div>
+    <div class="view-title">
+      <h2>Settings</h2>
+      <div class="sub">隐私 · ASR · 数据保留策略</div>
+    </div>
+    <div class="view-tags">
+      <span class="tag">ASR · 重要</span>
+      <span class="tag">闪电说凭证</span>
+    </div>
+  </div>
+
+  <div class="view-stage">
+    <div class="mac-window">
+      <div class="titlebar">
+        <div class="lights"><span class="l1"></span><span class="l2"></span><span class="l3"></span></div>
+        <div class="tbar-title">偏好设置 — MyPace</div>
+        <div class="tbar-meta"><span>⌘W 关闭</span></div>
+      </div>
+
+      <div class="v-set">
+        <nav class="set-nav">
+          <h6>常用</h6>
+          <div class="set-nav-item active">
+            <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2l2 4 4 .6-3 3 .7 4-3.7-2-3.7 2 .7-4-3-3 4-.6z"/></svg></span>
+            ASR 提供商
+            <span class="badge-mini">2</span>
+          </div>
+          <div class="set-nav-item">
+            <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18 M12 3a14 14 0 0 1 0 18 M12 3a14 14 0 0 0 0 18"/></svg></span>
+            外观与字体
+          </div>
+          <div class="set-nav-item">
+            <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10v.01 M11 10v.01 M15 10v.01 M7 14h10"/></svg></span>
+            快捷键
+          </div>
+
+          <h6 style="margin-top:22px">数据</h6>
+          <div class="set-nav-item">
+            <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v6c0 5-4 9-9 11-5-2-9-6-9-11V7z"/></svg></span>
+            隐私与保留
+          </div>
+          <div class="set-nav-item">
+            <span class="ic"><svg viewBox="0 0 24 24"><path d="M21 8V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2 M9 12h12 M18 9l3 3-3 3"/></svg></span>
+            导入 / 导出
+          </div>
+
+          <h6 style="margin-top:22px">系统</h6>
+          <div class="set-nav-item">
+            <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3.9a7 7 0 0 0-2-1.2L14 3h-4l-.6 2.6a7 7 0 0 0-2 1.2l-2.3-.9-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-.9c.6.5 1.3.9 2 1.2L10 21h4l.6-2.6a7 7 0 0 0 2-1.2l2.3.9 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/></svg></span>
+            高级参数
+          </div>
+          <div class="set-nav-item">
+            <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4 M12 16v.01"/></svg></span>
+            关于 MyPace
+          </div>
+        </nav>
+
+        <div class="set-body">
+          <h2>语音识别 (ASR)</h2>
+          <p class="lead">
+            MyPace 用 <b>火山引擎 ASR</b> 把你的练习录音对齐成精确到字的节奏映射 —— 这是整个工具能"听懂你节奏"的核心。
+            原始音频默认<b>只在本机暂存</b>，对齐完成后按你的策略自动删除。
+          </p>
+
+          <div class="provider-hero">
+            <div class="ph-left">
+              <div class="ph-badges">
+                <span class="badge rec">推荐</span>
+                <span class="badge live"><i></i>已连接</span>
+                <span class="badge ver">VOLCENGINE · v3 · STREAMING</span>
+              </div>
+              <h3 class="ph-title">火山引擎</h3>
+              <div class="ph-meta">中文识别精度业内领先 · 平均延迟 200 ms 以内</div>
+              <p class="ph-desc">
+                MyPace 选了云端方案，因为<b>精确到字的时间戳对齐</b>对节奏映射至关重要。
+                凭证由闪电说托管，调用时通过系统 Keychain 读取，本机不复制不外传。
+              </p>
+              <div class="ph-stats">
+                <div class="ph-stat">
+                  <div class="ph-stat-num">96.4<em>%</em></div>
+                  <div class="ph-stat-lbl">中文准确率</div>
+                </div>
+                <div class="ph-stat">
+                  <div class="ph-stat-num">187<em>ms</em></div>
+                  <div class="ph-stat-lbl">实测平均延迟</div>
+                </div>
+                <div class="ph-stat">
+                  <div class="ph-stat-num">4h 32<em>m</em></div>
+                  <div class="ph-stat-lbl">本月剩余配额</div>
+                </div>
+              </div>
+            </div>
+            <div class="ph-right">
+              <div class="ph-status">
+                <div class="ph-status-led"></div>
+                <div>
+                  <div class="ph-status-ttl">服务正常</div>
+                  <div class="ph-status-sub">最近测试 · 4h 前</div>
+                </div>
+              </div>
+              <div class="ph-quota">
+                <div class="ph-quota-lbl"><span>本月用量</span><b>35%</b></div>
+                <div class="ph-quota-bar"><i style="width:35%"></i></div>
+                <div class="ph-quota-meta">已用 2h 28m / 总配额 7h</div>
+              </div>
+              <div class="ph-actions">
+                <button class="btn"><span style="width:8px;height:8px;border-radius:50%;background:var(--sage-bright);box-shadow:0 0 6px var(--sage-bright)"></span>测试连接</button>
+                <button class="btn ghost" style="justify-content:center">查看详细用量 →</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="privacy-tip">
+            <div class="priv-ico">!</div>
+            <div class="priv-meat">
+              <div class="priv-ttl">关于隐私：音频会上传到火山引擎</div>
+              <div class="priv-desc">每次练习前会弹窗提示。音频在传输和存储过程中加密，对齐完成后按你的保留策略自动删除（默认 7 天）。</div>
+            </div>
+            <button class="btn ghost">隐私策略 →</button>
+          </div>
+
+          <div class="import-card">
+            <div class="ico">闪</div>
+            <div class="meat">
+              <h5>从「闪电说」一键导入凭证</h5>
+              <div class="d">检测到本机已安装闪电说 · 可直接读取 app_id + access_token · <b>已成功导入 · 24 天前</b></div>
+            </div>
+            <button class="btn">重新导入</button>
+          </div>
+
+          <div class="credential-card">
+            <h4>自定义火山引擎凭证 <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-mute);font-weight:400">可选，覆盖闪电说导入</span></h4>
+            <div class="cred-row">
+              <div class="cred-input">
+                <label>APP ID</label>
+                <div class="inp"><span class="mask">7821******2901</span><span class="eye">显示</span></div>
+              </div>
+              <div class="cred-input">
+                <label>ACCESS TOKEN</label>
+                <div class="inp"><span class="mask">●●●●●●●●●●●●●●●●●●</span><span class="eye">显示</span></div>
+              </div>
+            </div>
+            <div class="action-row">
+              <button class="btn"><span style="color:var(--sage)">●</span>测试连接</button>
+              <button class="btn ghost">查看本月用量</button>
+              <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--sage)">✓ 最近一次测试 · 4h 前 · 延迟 187ms</span>
+            </div>
+          </div>
+
+          <div class="credential-card">
+            <h4>练习音频保留策略</h4>
+            <div class="scroll-modes" style="grid-template-columns:repeat(3,1fr)">
+              <div class="scroll-mode">
+                <div class="name">对齐后立即删除</div>
+                <div class="desc">最隐私 · 但无法重新对齐</div>
+              </div>
+              <div class="scroll-mode active">
+                <div class="name">保留 7 天 <span class="badge">推荐</span></div>
+                <div class="desc">可随时重新对齐节奏</div>
+              </div>
+              <div class="scroll-mode">
+                <div class="name">永久保留</div>
+                <div class="desc">手动清理 · 占用本机空间</div>
+              </div>
+            </div>
+            <div class="action-row">
+              <button class="btn" style="color:var(--rec);border-color:#C1362950">清除所有练习音频 (12 个 · 287 MB)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="notes">
+      <div class="note-block">
+        <h5>单一火山引擎</h5>
+        <ul>
+          <li>v1 只用<b>火山引擎</b>云端 ASR —— 中文精度业内最高、毫秒级时间戳</li>
+          <li>大卡片显示<b>实时状态 / 配额 / 延迟</b>三个关键指标</li>
+          <li>琥珀色高亮边框 + glow，明确"这就是当前生效的引擎"</li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>信任不偷懒</h5>
+        <ul>
+          <li>"音频会上传"的<b>隐私 tip 卡片</b>单独 section，不藏</li>
+          <li>每次练习前都有<b>授权弹窗</b>（见 Modal M-01）</li>
+          <li>凭证由闪电说托管，<b>Keychain 读取，本机不存</b></li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>闪电说集成</h5>
+        <ul>
+          <li>大卡片在 ASR section 顶部，<b>已导入</b>状态绿色</li>
+          <li>无闪电说时按钮变灰 + 链接到下载页</li>
+          <li>导入是<b>明文授权</b>，弹窗确认（见 Modal #3）</li>
+        </ul>
+      </div>
+      <div class="note-block">
+        <h5>数据保留</h5>
+        <ul>
+          <li>三档：立即删 / <b>7 天（默认）</b> / 永久</li>
+          <li>一键清空，显示占用空间</li>
+          <li>「清除」按钮用<b>红色边框</b>区分破坏性操作</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+
+<!-- ============================ MODALS ============================ -->
+<section class="view-section" id="modals">
+  <div class="view-header">
+    <div class="view-num">08</div>
+    <div class="view-title">
+      <h2>Modals &amp; States</h2>
+      <div class="sub">关键时刻的临时界面</div>
+    </div>
+    <div class="view-tags">
+      <span class="tag">4 个核心 Modal</span>
+    </div>
+  </div>
+
+  <div class="modal-grid">
+
+    <!-- Modal 1: Cloud ASR consent -->
+    <div>
+      <div class="modal-label">M-01 · 云端 ASR 授权（练习前强提示）</div>
+      <div class="modal-stage">
+        <div class="modal-card info">
+          <div class="head">
+            <div class="icn">↑</div>
+            <div>
+              <h3>本次录音将上传到火山引擎</h3>
+              <div class="sub">PRACTICE · CLOUD ASR</div>
+            </div>
+          </div>
+          <p>MyPace 需要把刚才的练习录音上传到 <b>火山引擎</b> 来生成精确到字的节奏映射。音频在传输和存储过程中加密，对齐完成后按你的策略自动删除。</p>
+          <div class="info-list">
+            <div class="row"><span>预计时长</span><b>~ 5 分 30 秒</b></div>
+            <div class="row"><span>上传大小</span><b>~ 5 MB</b></div>
+            <div class="row"><span>处理方</span><b>火山引擎 · 字节跳动</b></div>
+            <div class="row"><span>本机保留</span><b>7 天后自动删除</b></div>
+          </div>
+          <div class="modal-tip">
+            <span class="lock">🔒</span>
+            音频加密传输；MyPace 不会保存到云端，仅作为对齐输入使用。
+          </div>
+          <div class="actions">
+            <button class="btn ghost">本次跳过对齐</button>
+            <div class="spacer"></div>
+            <button class="btn">取消</button>
+            <button class="btn-cta">同意 · 开始</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 2: Alignment progress -->
+    <div>
+      <div class="modal-label">M-02 · 对齐进度（可取消）</div>
+      <div class="modal-stage">
+        <div class="modal-card">
+          <div class="head">
+            <div class="icn">●</div>
+            <div>
+              <h3>正在生成节奏映射</h3>
+              <div class="sub">VOLCENGINE · ALIGNING · ~3s</div>
+            </div>
+          </div>
+          <p>用 <b>火山引擎</b> 把刚才的练习对齐到稿子。完成后会自动跳到节奏编辑器。</p>
+          <div class="progress"><i></i></div>
+          <div class="progress-label">
+            <span>步骤 <b>3 / 4</b></span>
+            <span><b>62%</b> · 剩余 ~ 3 s</span>
+          </div>
+          <div class="step-list">
+            <div class="step done">
+              <span class="ic">✓</span>
+              <span class="lbl">上传音频</span>
+              <span class="val">3.7 MB</span>
+            </div>
+            <div class="step done">
+              <span class="ic">✓</span>
+              <span class="lbl">ASR 识别</span>
+              <span class="val">1.8 s</span>
+            </div>
+            <div class="step now">
+              <span class="ic">●</span>
+              <span class="lbl">时间戳对齐</span>
+              <span class="val">进行中</span>
+            </div>
+            <div class="step wait">
+              <span class="ic">○</span>
+              <span class="lbl">置信度评分</span>
+              <span class="val">等待</span>
+            </div>
+          </div>
+          <div class="actions">
+            <div class="spacer"></div>
+            <button class="btn ghost">在后台继续</button>
+            <button class="btn">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 3: 闪电说凭证导入 -->
+    <div>
+      <div class="modal-label">M-03 · 闪电说凭证导入确认</div>
+      <div class="modal-stage">
+        <div class="modal-card success">
+          <div class="head">
+            <div class="icn">闪</div>
+            <div>
+              <h3>读取闪电说的火山凭证</h3>
+              <div class="sub">SHANDIANSHUO · KEYCHAIN</div>
+            </div>
+          </div>
+          <p>MyPace 检测到本机安装了 <b>闪电说 v2.3.1</b>。可以直接复用它在 Keychain 中保存的火山引擎凭证，无需重新输入。</p>
+          <div class="info-list">
+            <div class="row"><span>来源 App</span><b>com.shandianshuo.mac</b></div>
+            <div class="row"><span>凭证类型</span><b>APP_ID + ACCESS_TOKEN</b></div>
+            <div class="row"><span>有效期</span><b>不过期 · 由闪电说管理</b></div>
+          </div>
+          <div class="modal-tip">
+            <span class="lock">🔒</span>
+            MyPace 不会复制凭证到自己的存储；每次调用 ASR 时通过系统 Keychain 现读现用。
+          </div>
+          <div class="actions">
+            <button class="btn ghost">手动输入</button>
+            <div class="spacer"></div>
+            <button class="btn">取消</button>
+            <button class="btn-cta">允许导入</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 4: 对齐失败 / 低置信 -->
+    <div>
+      <div class="modal-label">M-04 · 对齐失败 / 低置信提示</div>
+      <div class="modal-stage">
+        <div class="modal-card warn">
+          <div class="head">
+            <div class="icn">!</div>
+            <div>
+              <h3>节奏映射置信度偏低</h3>
+              <div class="sub">19 句中 · 8 句 &lt; 50%</div>
+            </div>
+          </div>
+          <p>这次的录音可能<b>背景噪音较大</b>，或者<b>语速偏快</b>。系统已经做出最佳猜测，但有 8 个句子置信度偏低，建议进编辑器复核。</p>
+          <div class="severity-grid">
+            <div class="sev"><div class="n">19</div><div class="l">总句</div></div>
+            <div class="sev good"><div class="n">8</div><div class="l">高置信</div></div>
+            <div class="sev warn"><div class="n">3</div><div class="l">需复核</div></div>
+            <div class="sev bad"><div class="n">8</div><div class="l">低置信</div></div>
+          </div>
+          <div class="modal-tip" style="background:#FFEEEA;border-color:#F2BFB6">
+            <span class="lock" style="background:var(--sig-red)">!</span>
+            建议：进编辑器后用<b style="color:var(--ink)">右上"低置信"筛选</b>快速定位需修改的句子。
+          </div>
+          <div class="actions">
+            <button class="btn ghost">重新练习</button>
+            <div class="spacer"></div>
+            <button class="btn">查看波形</button>
+            <button class="btn-cta">进入编辑器</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="foot">
+  <div class="legend">
+    Let the speaker keep<br>
+    the <em>rhythm</em>. <br>
+    Let the tool keep up.
+  </div>
+  <div class="meta">
+    <b>MyPace · Design v1</b>
+    Interaction walkthrough — 7 views + 4 modals<br>
+    Built with Fraunces / Geist / JetBrains Mono<br>
+    For demo purposes — May 21, 2026
+  </div>
+</footer>
+
+</div><!-- /wrap -->
+
+<script>
+/* ---------- Practice recording waveform ---------- */
+(function(){
+  const bars = 84;
+  const head = 32;
+  const w = document.getElementById('prac-wave');
+  if(!w) return;
+  let html = '';
+  for(let i=0;i<bars;i++){
+    const h = 6 + Math.abs(Math.sin(i*0.45) * 36) + Math.abs(Math.cos(i*1.3) * 18) * Math.random();
+    const cls = i < head ? 'past' : (i === head ? 'head' : '');
+    html += `<span class="bar ${cls}" style="height:${Math.min(h,52)}px"></span>`;
+  }
+  w.innerHTML = html;
+})();
+
+/* ---------- Rhythm editor waveform ---------- */
+(function(){
+  const bars = 200;
+  const w = document.getElementById('rhythm-wave');
+  if(!w) return;
+  let html = '';
+  // segments: [count, kind] kind: g(reen) y(ellow) r(ed)
+  const segs = [
+    [22,'g'],[20,'g'],[18,'y'],[26,'g'],[16,'r'],[24,'g'],[20,'y'],[22,'g'],
+    [16,'g'],[16,'g']
+  ];
+  const map = {g:'#5A8C5C', y:'#B8881C', r:'#B83B2E'};
+  let idx = 0;
+  for(const [count,kind] of segs){
+    for(let i=0;i<count;i++,idx++){
+      const center = count/2;
+      const dist = Math.abs(i - center)/center;
+      const base = 0.45 + (1-dist) * 0.55;
+      const noise = (Math.sin(idx*0.7)+Math.cos(idx*1.3))*0.15;
+      const h = Math.max(6, (base + noise) * 160 + (Math.random()*8));
+      const opacity = kind==='r' ? 0.95 : 0.75 + Math.random()*0.2;
+      html += `<span class="bar" style="background:${map[kind]};height:${h}px;opacity:${opacity}"></span>`;
+    }
+  }
+  w.innerHTML = html;
+})();
+
+/* ---------- Smooth scroll nav ---------- */
+document.querySelectorAll('.nav-links a').forEach(a=>{
+  a.addEventListener('click', e=>{
+    const id = a.getAttribute('href');
+    if(id && id.startsWith('#')){
+      e.preventDefault();
+      const el = document.querySelector(id);
+      if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  });
+});
+</script>
+</body>
+</html>

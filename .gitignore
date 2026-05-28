@@ -73,3 +73,13 @@ tmp/
 # ---- 站点本地预览缓存 ----
 site/.cache/
 site/.wrangler/
+
+# ---- Archive 二进制（归档目录中的编译产物不入 git）----
+archive/MyPace-Swift/build/
+archive/MyPace-Swift/MyPacePreview
+archive/MyPace-Swift/MyPacePreview-v*
+archive/MyPace-Swift/verify_*
+archive/MyPace-Swift/gen_icon
+archive/MyPace-Swift/*.dmg
+archive/MyPace-Prototype/*.dmg
+archive/mypace-old-prd-backup/*.dmg

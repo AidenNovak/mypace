@@ -1,0 +1,17 @@
+# 凭证
+.secrets.json
+
+# 构建产物
+build/
+*.dmg
+*.app/
+MyPace.xcodeproj/
+verify_spike
+verify_control
+verify_asr
+.DS_Store
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+DerivedData/
