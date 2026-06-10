@@ -8,6 +8,10 @@ Record your natural delivery once. MyPace captures your rhythm, pauses, and paci
 
 ---
 
+<p align="center">
+  <img src="https://github.com/AidenNovak/mypace/releases/download/v1.0.0/hero.png" alt="MyPace floating teleprompter" width="600">
+</p>
+
 ## Features
 
 - **Hidden from screen recording** — `NSWindow.sharingType = .none` makes the window invisible to OBS, QuickTime, Loom, Zoom
@@ -44,6 +48,16 @@ You'll need:
 2. **AI processes** — ASR generates a script with per-character timestamps (5–10 sec)
 3. **Play** — Tap play. The teleprompter scrolls at your exact pace with word-by-word highlighting
 4. **Record your video** — Open any screen recorder. MyPace stays invisible
+
+<p align="center">
+  <img src="https://github.com/AidenNovak/mypace/releases/download/v1.0.0/01-ready-rhythm.png" alt="Ready state" width="280">
+  <img src="https://github.com/AidenNovak/mypace/releases/download/v1.0.0/02-recording.png" alt="Recording" width="280">
+</p>
+
+<p align="center">
+  <img src="https://github.com/AidenNovak/mypace/releases/download/v1.0.0/03-editor.png" alt="Script editor" width="320">
+  <img src="https://github.com/AidenNovak/mypace/releases/download/v1.0.0/04-prefs.png" alt="Preferences" width="240">
+</p>
 
 ## Tech Stack
 
