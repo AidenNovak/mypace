@@ -1,67 +1,30 @@
-# MyPace · Monorepo
+# MyPace
 
-> An invisible teleprompter for vloggers on macOS.
-> 为视频创作者打造的隐形提词器。
+> An invisible teleprompter for video creators on macOS.
 
-[![status](https://img.shields.io/badge/status-v0.8%20preview-orange)]() [![platform](https://img.shields.io/badge/platform-macOS%2013%2B-blue)]() [![build](https://img.shields.io/badge/build-swiftc%20%2B%20shell-lightgrey)]()
+[![version](https://img.shields.io/badge/version-1.0.0-blueviolet)](https://github.com/AidenNovak/mypace/releases) [![platform](https://img.shields.io/badge/platform-macOS%2014%2B-blue)]() [![build](https://img.shields.io/badge/build-swiftc%20%2B%20shell-lightgrey)]()
 
----
-
-## 一句话
-
-录音先行 → AI 把你的话整理成带节奏的稿件 → 按你的节奏跟读 → 录视频时**画面里看不到这个窗口**。
+Record your natural delivery once. MyPace captures your rhythm, pauses, and pacing — then plays it back with word-by-word highlighting while staying completely invisible to screen recording.
 
 ---
 
-## 仓库结构
+## Features
 
-```
-mypace/
-├── app/                v0.8 当前在用的 app 源码（swiftc + shell 构建，不需要 Xcode）
-│   ├── Preview/          13 个 Swift 文件（核心实现）
-│   ├── Resources/        AppIcon.icns 等
-│   ├── build-app.sh      一键打包脚本 → 输出 .app + .dmg
-│   ├── gen_icon.swift    生成 macOS 圆角图标的脚本
-│   ├── README.md         开发者文档
-│   ├── ROADMAP.md        路线图
-│   ├── UPDATES.md        版本历史
-│   └── VLOGGER-README.md vlogger 安装指南（DMG 内附）
-│
-├── site/               文档站（Cloudflare Pages 部署根目录）
-│   ├── index.html        macOS Tahoe 风 + 三语 marketing landing
-│   ├── shots/            7 张精致 v0.8 截图
-│   ├── archive-design-*  v1 / tahoe 旧设计稿（归档）
-│   └── MyPace-Preview-0.8.0.dmg  可下载安装包
-│
-├── docs/               PRD / 技术规格 / UI/UX 基础（早期设计文档）
-│   ├── prd.md
-│   ├── technical-spec.md
-│   ├── ui-ux-foundation.md
-│   └── PRD-README.md
-│
-├── verify/             单文件 POC（验证核心技术）
-│   ├── verify_spike.swift          ScreenCaptureKit 隐形窗口
-│   ├── verify_rec.swift            AVAudioRecorder 录音
-│   ├── verify_asr.swift            火山引擎 ASR 调用
-│   ├── verify_asr_words.swift      字级时间戳
-│   ├── verify_word_playback.swift  字级动效回放
-│   └── verify_control.swift        UI 控件实验
-│
-├── archive/            归档目录（不再活跃开发的旧版本和工作区）
-│   ├── MyPace-Swift/     早期 v1.1 尝试的工作区（已废弃）
-│   ├── MyPace-Prototype/ 早期原型
-│   └── mypace-old-prd-backup/  早期 PRD 归档
-│
-├── CHANGELOG.md        版本日志（带日期的完整变更记录）
-├── .gitignore          排除 build / DMG / 旧二进制 / 凭证
-└── README.md           （本文件）
-```
+- **Hidden from screen recording** — `NSWindow.sharingType = .none` makes the window invisible to OBS, QuickTime, Loom, Zoom
+- **Speech-first workflow** — Talk naturally. AI turns your speech into a rhythm-aware script with per-character timestamps
+- **Character-level playback** — Each character has its own timestamp. Current word subtly scales up
+- **Script editor** — Full editor with sidebar, dark theme, rhythm status indicators
+- **Screen capture toggle** — One-click toolbar button to allow screen capture for demos
+- **3 languages** — Simplified Chinese, English, Japanese with auto-detect
+- **Privacy by default** — All data stays on your Mac. Never uploaded
 
----
+## Download
 
-## 快速开始
+[Download v1.0.0 DMG](https://github.com/AidenNovak/mypace/releases/latest) · Apple Silicon · macOS 14+
 
-### 跑当前 v0.8 (Preview 版)
+The DMG includes a bundled ASR credential — **zero configuration needed**. Just install and start talking.
+
+## Building from Source
 
 ```bash
 cd app
@@ -69,109 +32,51 @@ cd app
 open "build/MyPace Preview.app"
 ```
 
-需要：
+**Note:** The open-source repo does **not** include ASR credentials. To use ASR features with a self-built version, configure your own Volcano Engine credentials in Preferences → Speech Recognition, or set them in the app's Preferences panel.
 
-- macOS 14+ 编译，13+ 运行
-- Xcode Command Line Tools（`xcode-select --install`）
-- 火山引擎 ASR 凭证（在 `Preview/ASR.swift` 里读 keychain）
+You'll need:
+- macOS 14+, Xcode Command Line Tools (`xcode-select --install`)
+- A Volcano Engine account with ASR access (App ID + Access Token)
 
-### 本地预览文档站
+## How It Works
 
-```bash
-cd site
-python3 -m http.server 8765
-open http://localhost:8765/
-```
+1. **Record** — Tap the red button and speak naturally into your mic
+2. **AI processes** — ASR generates a script with per-character timestamps (5–10 sec)
+3. **Play** — Tap play. The teleprompter scrolls at your exact pace with word-by-word highlighting
+4. **Record your video** — Open any screen recorder. MyPace stays invisible
 
-### 部署文档站到 Cloudflare Pages
+## Tech Stack
 
-**线上地址：** https://mypace-aaz.pages.dev/
-
-```bash
-cd site
-./deploy.sh
-```
-
-配置说明：
-
-| 文件 | 作用 |
+| Layer | Choice |
 |---|---|
-| `site/wrangler.toml` | Pages 项目名 `mypace` |
-| `site/_headers` | 缓存策略 + DMG 下载头 |
-| `site/_redirects` | 路由规则 |
-| `site/deploy.sh` | 一键 `wrangler pages deploy` |
-| `.github/workflows/deploy-site.yml` | push 到 `main` 且改 `site/**` 时自动部署（需 GitHub Secrets） |
+| UI | Swift + AppKit + CoreAnimation |
+| Recording | AVAudioRecorder (16 kHz mono WAV) |
+| ASR | Volcano Engine v3 (per-character timestamps) |
+| Character rendering | CATextLayer per character |
+| Screen capture invisibility | `NSWindow.sharingType = .none` |
+| Storage | JSON (`~/Library/Application Support/MyPacePreview/`) |
+| i18n | Pure Swift dictionary, no `.strings` files |
+| Build | `xcrun swiftc` + `codesign` + `hdiutil` |
 
-GitHub Actions 需在 repo Settings → Secrets 添加：
+## Repo Structure
 
-- `CLOUDFLARE_API_TOKEN` — API Token（权限：Account / Cloudflare Pages Edit）
-- `CLOUDFLARE_ACCOUNT_ID` — `8b0a7433cabd0fa631b4c72ca880cd7a`
-
-自定义域名：Cloudflare Dashboard → Workers & Pages → **mypace** → Custom domains。
-
-### 编译验证脚本
-
-```bash
-cd verify
-swiftc verify_spike.swift -o verify_spike && ./verify_spike
+```
+mypace/
+├── app/                    App source code
+│   ├── Preview/              14 Swift files
+│   ├── Resources/            AppIcon.icns
+│   └── build-app.sh          Build script → .app + .dmg
+├── site/                   Landing page (Cloudflare Pages)
+└── README.md
 ```
 
----
+## Privacy
 
-## 当前状态（v0.8 · 2026-05）
+- Audio is sent to ASR provider for speech-to-text processing only
+- Scripts, rhythm maps, and recordings are stored only on your Mac
+- No analytics, no crash reporting, no cloud storage
+- Delete everything: `rm -rf ~/Library/Application\ Support/MyPacePreview/`
 
-- ✅ 录音先行的口述工作流
-- ✅ 火山引擎 ASR + 字级时间戳
-- ✅ ScreenCaptureKit `sharingType = .none`（录屏看不到）
-- ✅ 字级跟读动效（CATextLayer per char，无抖动）
-- ✅ 中 / 英 / 日 i18n（自动跟随系统 + 手动切换）
-- ✅ 窗口可拖拽 resize
-- ✅ 文档站（macOS Tahoe 风 + 真实截图 + 三语）
-- ⏸ Apple Developer ID 签名 + Notarization（待证书）
-- ⏸ App Store 上架（公测验证后再评估）
+## License
 
----
-
-## 发版路径
-
-详见 `app/ROADMAP.md`。
-
-**当前策略**：专注 Track A（自托管 DMG 公测）。
-
-- 注册 Apple Developer →  hardened runtime + notarize → 通过 Cloudflare Pages 分发 DMG
-- 先验证核心价值（节奏同步 + 逐字高亮 + 口述模式）是否打动真实 vlogger
-- App Store（Track B）作为后续选项，待产品验证后再评估是否值得做沙盒 + 正式上架流程
-
-（历史：曾尝试 `app-v11-xcode/` 作为 SwiftUI + 沙盒版本，因核心引擎未完成已移除）
-
----
-
-## 技术栈
-
-| 层 | 选型 |
-|---|---|
-| UI | Swift + AppKit + CoreAnimation（极致控制节奏滚动与逐字动画） |
-| 录音 | `AVAudioRecorder`（16 kHz mono WAV）|
-| ASR | 火山引擎 v3（big-model + `show_words` + `enable_word_time_offset`） |
-| 字级渲染 | `CATextLayer` per character |
-| 隐形录屏 | `NSWindow.sharingType = .none`（ScreenCaptureKit 排除）|
-| 持久化 | JSON（在 `~/Library/Application Support/MyPacePreview/`）|
-| i18n | 纯 Swift 字典（`Preview/L10n.swift`），无 `.strings` 文件依赖 |
-| 构建 | `xcrun swiftc` + `codesign --options runtime` + `hdiutil` |
-
----
-
-## 隐私
-
-- 录音音频会上传到**火山引擎**做 ASR，每次都有进度条提示
-- 稿件 JSON、生成的节奏映射、录音 WAV 都**只存你 mac 本地**：`~/Library/Application Support/MyPacePreview/`
-- 不上云，不埋点，不上报崩溃
-- 想清干净一句 `rm -rf ~/Library/Application\ Support/MyPacePreview/`
-
----
-
-## 协作 & 许可
-
-- 维护者: [@AidenNovak](https://github.com/AidenNovak)
-- 当前是 **private** 仓库，未公开
-- 许可协议：待定（计划 v1.0 上架时定为 MIT 或商业付费）
+All rights reserved. Source available for inspection.

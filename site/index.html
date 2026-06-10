@@ -35,10 +35,10 @@
   --text-4:           rgba(244, 244, 245, 0.28);
 
   /* Accent */
-  --orange:           #FF8A1F;
-  --orange-bright:    #FFB04A;
-  --orange-deep:      #F26A0E;
-  --orange-glow:      rgba(255, 138, 31, 0.35);
+  --orange:           #7348E0;
+  --orange-bright:    #9068F0;
+  --orange-deep:      #5B30C8;
+  --orange-glow:      rgba(115, 72, 224, 0.35);
   --red:              #F0473B;
   --red-bright:       #FF6B5E;
   --red-glow:         rgba(240, 71, 59, 0.32);
@@ -82,9 +82,9 @@ html, body {
 
 body {
   background:
-    radial-gradient(1200px 600px at 50% -10%, rgba(255, 138, 31, 0.08) 0%, transparent 60%),
+    radial-gradient(1200px 600px at 50% -10%, rgba(115, 72, 224, 0.08) 0%, transparent 60%),
     radial-gradient(900px 600px at 100% 30%, rgba(10, 132, 255, 0.05) 0%, transparent 60%),
-    radial-gradient(900px 600px at 0% 60%, rgba(255, 138, 31, 0.04) 0%, transparent 60%),
+    radial-gradient(900px 600px at 0% 60%, rgba(115, 72, 224, 0.04) 0%, transparent 60%),
     var(--bg);
   min-height: 100vh;
   overflow-x: hidden;
@@ -93,6 +93,7 @@ body {
 a { color: inherit; text-decoration: none; }
 
 ::selection { background: var(--orange); color: #fff; }
+
 
 /* =========================================================
    NAV
@@ -130,6 +131,7 @@ a { color: inherit; text-decoration: none; }
   height: 28px;
   border-radius: 7px;
   background: linear-gradient(135deg, var(--orange-bright) 0%, var(--orange-deep) 100%);
+  box-shadow: 0 4px 12px var(--orange-glow), 0 0 0 0.5px rgba(255, 255, 255, 0.2) inset;
   display: grid;
   place-items: center;
   font-weight: 800;
@@ -817,10 +819,10 @@ html[data-lang="ja"] [data-ja] { display: revert; }
 <header class="hero">
   <div class="eyebrow">
     <span class="dot"></span>
-    <span data-en>v0.8 Internal Preview</span>
-    <span data-zh>v0.8 内部测试版</span>
-    <span data-ja>v0.8 内部プレビュー</span>
-    <span class="ver">0.8.0</span>
+    <span data-en>v1.0.0 Public Release</span>
+    <span data-zh>v1.0.0 公开发布</span>
+    <span data-ja>v1.0.0 公開リリース</span>
+    <span class="ver">1.0.0</span>
   </div>
 
   <h1>
@@ -838,9 +840,9 @@ html[data-lang="ja"] [data-ja] { display: revert; }
   <div class="cta-row">
     <a href="#download" class="btn-primary">
       <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 11.5 4 7.5l1.4-1.4L7 7.7V1h2v6.7l1.6-1.6L12 7.5l-4 4ZM2 14v-2h12v2H2Z"/></svg>
-      <span data-en>Download Internal Preview</span>
-      <span data-zh>下载内部测试版</span>
-      <span data-ja>内部プレビューをダウンロード</span>
+      <span data-en>Download v1.0.0</span>
+      <span data-zh>下载 v1.0.0</span>
+      <span data-ja>v1.0.0 をダウンロード</span>
     </a>
     <a href="#workflow" class="btn-secondary">
       <span data-en>See how it works</span>
@@ -850,9 +852,9 @@ html[data-lang="ja"] [data-ja] { display: revert; }
   </div>
 
   <div class="cta-meta">
-    <span data-en>Internal Preview · Notarized · Apple Silicon only</span>
-    <span data-zh>内部测试版 · 已公证 · 仅 Apple Silicon</span>
-    <span data-ja>内部プレビュー · 公証済み · Apple Silicon のみ</span>
+    <span data-en>v1.0.0 · Apple Silicon · macOS 14+</span>
+    <span data-zh>v1.0.0 · Apple Silicon · macOS 14+</span>
+    <span data-ja>v1.0.0 · Apple Silicon · macOS 14+</span>
   </div>
 
   <div class="hero-image">
@@ -1214,16 +1216,16 @@ html[data-lang="ja"] [data-ja] { display: revert; }
     <span data-ja>「ちょっと止めて」<br/>なしで動画を撮ろう。</span>
   </h2>
   <p>
-    <span data-en>Free preview release. macOS 13 Ventura or later. Apple Silicon native (1.5 MB).</span>
-    <span data-zh>Preview 版免费。macOS 13 Ventura 及以上。Apple Silicon 原生 (1.5 MB)。</span>
-    <span data-ja>プレビュー版無料。macOS 13 Ventura 以降。Apple Silicon ネイティブ (1.5 MB)。</span>
+    <span data-en>Free release. macOS 14+ Apple Silicon native (1 MB).</span>
+    <span data-zh>免费。macOS 14+ Apple Silicon 原生 (1 MB)。</span>
+    <span data-ja>無料。macOS 14+ Apple Silicon ネイティブ (1 MB)。</span>
   </p>
   <div class="cta-row">
-    <a href="MyPace-Preview-0.8.0.dmg" class="btn-primary">
+    <a href="MyPace-Preview-1.0.0.dmg" class="btn-primary">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 11.5 4 7.5l1.4-1.4L7 7.7V1h2v6.7l1.6-1.6L12 7.5l-4 4ZM2 14v-2h12v2H2Z"/></svg>
-      <span data-en>Download v0.8 · 1.5 MB</span>
-      <span data-zh>下载 v0.8 · 1.5 MB</span>
-      <span data-ja>v0.8 をダウンロード · 1.5 MB</span>
+      <span data-en>Download v1.0.0 · 1 MB</span>
+      <span data-zh>下载 v1.0.0 · 1 MB</span>
+      <span data-ja>v1.0.0 をダウンロード · 1 MB</span>
     </a>
     <a href="#workflow" class="btn-secondary">
       <span data-en>Read the docs</span><span data-zh>查看文档</span><span data-ja>ドキュメント</span>
