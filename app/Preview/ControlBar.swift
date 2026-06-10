@@ -84,7 +84,7 @@ final class ControlBar: NSView {
         switch stage {
         case .ready:
             if hasRhythm {
-                primaryBtn.configure(title: L(.btnPlayRhythm), symbol: "play.fill", style: .amber)
+                primaryBtn.configure(title: L(.btnPlayRhythm), symbol: "play.fill", style: .violet)
             } else {
                 primaryBtn.configure(title: L(.btnStartRecording), symbol: "record.circle.fill", style: .red)
             }
@@ -105,7 +105,7 @@ final class ControlBar: NSView {
             return
 
         case .playing:
-            primaryBtn.configure(title: L(.btnPause), symbol: "pause.fill", style: .amber)
+            primaryBtn.configure(title: L(.btnPause), symbol: "pause.fill", style: .violet)
             navStack.isHidden = false
             prevBtn.isEnabled = true
             nextBtn.isEnabled = true
@@ -137,7 +137,7 @@ final class PrimaryButton: NSButton {
 
     enum Style {
         case red          // 录音 / 停止
-        case amber        // 播放 / 暂停
+        case violet       // 播放 / 暂停
         case processing   // 对齐中
     }
 
@@ -196,7 +196,7 @@ final class PrimaryButton: NSButton {
         let bg: NSColor
         switch currentStyle {
         case .red:        bg = NSColor(red: 0.95, green: 0.27, blue: 0.22, alpha: 1)
-        case .amber:      bg = NSColor(red: 0.95, green: 0.55, blue: 0.18, alpha: 1)
+        case .violet:      bg = NSColor(red: 0.45, green: 0.35, blue: 0.95, alpha: 1)
         case .processing: bg = NSColor(red: 0.5,  green: 0.5,  blue: 0.5, alpha: 1)
         }
         layer?.backgroundColor = bg.cgColor

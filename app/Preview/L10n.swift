@@ -32,6 +32,8 @@ enum L10nKey: String {
     case tooltipNextLine
     case tooltipEditScript
     case tooltipSwitchScript
+    case tooltipCaptureProtect
+    case tooltipCaptureVisible
     case tooltipPreferences
 
     // Stack 中央引导文字
@@ -110,6 +112,67 @@ enum L10nKey: String {
     // 默认稿件标题
     case defaultScriptTitle    // "我的第一段录音"
     case untitledScript        // "未命名"
+
+    // 编辑器窗口
+    case editorWindowTitle
+    case editorAllScripts
+    case editorTitlePlaceholder
+    case editorLines
+    case editorChars
+    case editorHasRhythm
+    case editorNoRhythm
+    case editorDeleteConfirm
+
+    // About
+    case aboutTitle
+    case aboutTagline
+    case aboutVersion
+    case aboutCopyright
+    case aboutPrivacy
+
+    // Error messages
+    case errorMicDenied
+    case errorNoSpeech
+    case errorRhythmMissing
+
+    // Mic status dialog
+    case micStatusTitle
+    case micStatusDenied
+    case micStatusNotAsked
+    case micStatusRequestPerm
+    case micStatusOpenSettings
+    case micStatusClose
+
+    // Delete script
+    case deleteScriptConfirm
+    case deleteScriptInfo
+
+    // 偏好设置 - Tab
+    case prefsTabVisual
+    case prefsTabASR
+    case prefsTabData
+
+    // 偏好设置 - ASR
+    case prefsAsrSectionTitle
+    case prefsAsrCurrentSource
+    case prefsAsrSourceCustom
+    case prefsAsrSourceShandian
+    case prefsAsrSourceBundled
+    case prefsAsrReady
+    case prefsAsrNotConfigured
+    case prefsAsrCustomTitle
+    case prefsAsrCustomHint
+    case prefsAsrSave
+
+    // 偏好设置 - Data
+    case prefsDataPath
+    case prefsOpenDataFolder
+    case prefsScriptStats
+    case prefsScriptsTotal
+    case prefsScriptsRhythm
+    case prefsRecordings
+    case prefsOpenRecordings
+    case prefsOpenLog
 }
 
 // MARK: - Language
@@ -195,6 +258,8 @@ final class L10n {
             .tooltipNextLine: "下一句  ↓",
             .tooltipEditScript: "编辑稿件  ⌘E",
             .tooltipSwitchScript: "切换稿件  ⌘O",
+            .tooltipCaptureProtect: "录屏保护：已隐藏",
+            .tooltipCaptureVisible: "录屏保护：可被录制",
             .tooltipPreferences: "偏好设置  ⌘,",
 
             .promptTapToStart: "点 ● 开始录音",
@@ -230,9 +295,9 @@ final class L10n {
             .prefsFontSize: "字号",
             .prefsOpacity: "透明度",
             .prefsAccentColor: "高亮颜色",
-            .prefsAccentAmber: "琥珀",
+            .prefsAccentAmber: "蓝紫",
             .prefsAccentBlue: "天蓝",
-            .prefsAccentGreen: "翡翠",
+            .prefsAccentGreen: "玫瑰",
             .prefsAllowCapture: "允许被屏幕录制看到",
             .prefsAllowCaptureHint: "默认关闭——你录视频时这个窗口不会出现在画面里",
             .prefsDone: "完成",
@@ -265,6 +330,59 @@ final class L10n {
 
             .defaultScriptTitle: "我的第一段录音",
             .untitledScript: "未命名",
+
+            .editorWindowTitle: "编辑稿件",
+            .editorAllScripts: "全部稿件",
+            .editorTitlePlaceholder: "稿件标题",
+            .editorLines: "行",
+            .editorChars: "字",
+            .editorHasRhythm: "有节奏",
+            .editorNoRhythm: "未生成节奏",
+            .editorDeleteConfirm: "确认删除这个稿件？",
+
+            .aboutTitle: "MyPace · Preview",
+            .aboutTagline: "为视频创作者打造的隐形提词器",
+            .aboutVersion: "版本",
+            .aboutCopyright: "© 2026 MyPace Team",
+            .aboutPrivacy: "所有数据仅存储在本地，永远不会上传",
+
+            .errorMicDenied: "麦克风权限被拒绝。\n\n请到 系统设置 → 隐私与安全 → 麦克风 → 勾选「MyPace Preview」，然后重启 app。",
+            .errorNoSpeech: "识别失败：录音里没有检测到语音。\n请检查麦克风是否离嘴近一点，或者重试。",
+            .errorRhythmMissing: "当前稿件还没有节奏映射。先录一次音生成节奏。",
+
+            .micStatusTitle: "麦克风权限状态：%@",
+            .micStatusDenied: "如果显示「已拒绝」，需要去：\n系统设置 → 隐私与安全 → 麦克风 → 勾选「MyPace Preview」。",
+            .micStatusNotAsked: "如果显示「未询问」，点下面「请求权限」会弹原生申请框。",
+            .micStatusRequestPerm: "请求权限",
+            .micStatusOpenSettings: "打开系统设置",
+            .micStatusClose: "关闭",
+
+            .deleteScriptConfirm: "确认删除？",
+            .deleteScriptInfo: "「%@」将被永久删除。",
+
+            .prefsTabVisual: "外观",
+            .prefsTabASR: "语音识别",
+            .prefsTabData: "数据管理",
+
+            .prefsAsrSectionTitle: "语音识别（ASR）配置",
+            .prefsAsrCurrentSource: "当前凭证来源",
+            .prefsAsrSourceCustom: "自定义",
+            .prefsAsrSourceShandian: "闪电说",
+            .prefsAsrSourceBundled: "内置",
+            .prefsAsrReady: "已就绪",
+            .prefsAsrNotConfigured: "未配置",
+            .prefsAsrCustomTitle: "自定义火山引擎凭证",
+            .prefsAsrCustomHint: "填入你自己的火山引擎语音识别 App ID 和 Access Token。留空则使用内置凭证或闪电说配置。",
+            .prefsAsrSave: "保存凭证",
+
+            .prefsDataPath: "数据存储路径",
+            .prefsOpenDataFolder: "在 Finder 中打开",
+            .prefsScriptStats: "稿件统计",
+            .prefsScriptsTotal: "个稿件",
+            .prefsScriptsRhythm: "个有节奏",
+            .prefsRecordings: "录音文件",
+            .prefsOpenRecordings: "打开录音目录",
+            .prefsOpenLog: "打开日志文件",
         ],
 
         .en: [
@@ -285,6 +403,8 @@ final class L10n {
             .tooltipNextLine: "Next line  ↓",
             .tooltipEditScript: "Edit script  ⌘E",
             .tooltipSwitchScript: "Switch script  ⌘O",
+            .tooltipCaptureProtect: "Capture protect: hidden",
+            .tooltipCaptureVisible: "Capture protect: visible",
             .tooltipPreferences: "Preferences  ⌘,",
 
             .promptTapToStart: "Tap ● to start recording",
@@ -320,9 +440,9 @@ final class L10n {
             .prefsFontSize: "Font Size",
             .prefsOpacity: "Opacity",
             .prefsAccentColor: "Accent Color",
-            .prefsAccentAmber: "Amber",
+            .prefsAccentAmber: "Violet",
             .prefsAccentBlue: "Blue",
-            .prefsAccentGreen: "Green",
+            .prefsAccentGreen: "Rose",
             .prefsAllowCapture: "Allow screen recording to see this window",
             .prefsAllowCaptureHint: "Off by default — this window stays invisible to your screen recording",
             .prefsDone: "Done",
@@ -355,6 +475,59 @@ final class L10n {
 
             .defaultScriptTitle: "My first recording",
             .untitledScript: "Untitled",
+
+            .editorWindowTitle: "Edit Script",
+            .editorAllScripts: "All Scripts",
+            .editorTitlePlaceholder: "Script title",
+            .editorLines: "lines",
+            .editorChars: "chars",
+            .editorHasRhythm: "Has rhythm",
+            .editorNoRhythm: "No rhythm yet",
+            .editorDeleteConfirm: "Delete this script?",
+
+            .aboutTitle: "MyPace · Preview",
+            .aboutTagline: "An invisible teleprompter for video creators",
+            .aboutVersion: "Version",
+            .aboutCopyright: "© 2026 MyPace Team",
+            .aboutPrivacy: "All data stays on your Mac. Never uploaded.",
+
+            .errorMicDenied: "Microphone access denied.\n\nGo to System Settings → Privacy & Security → Microphone → enable MyPace Preview, then restart.",
+            .errorNoSpeech: "No speech detected in recording.\nTry moving closer to the mic, or record again.",
+            .errorRhythmMissing: "No rhythm map yet. Record first to generate one.",
+
+            .micStatusTitle: "Microphone permission: %@",
+            .micStatusDenied: "If denied, go to:\nSystem Settings → Privacy & Security → Microphone → enable MyPace Preview.",
+            .micStatusNotAsked: "If not asked yet, tap Request Permission below.",
+            .micStatusRequestPerm: "Request Permission",
+            .micStatusOpenSettings: "Open System Settings",
+            .micStatusClose: "Close",
+
+            .deleteScriptConfirm: "Delete?",
+            .deleteScriptInfo: "「%@」will be permanently deleted.",
+
+            .prefsTabVisual: "Appearance",
+            .prefsTabASR: "Speech Recognition",
+            .prefsTabData: "Data",
+
+            .prefsAsrSectionTitle: "Speech Recognition (ASR) Settings",
+            .prefsAsrCurrentSource: "Current credential source",
+            .prefsAsrSourceCustom: "Custom",
+            .prefsAsrSourceShandian: "Shandianshuo",
+            .prefsAsrSourceBundled: "Bundled",
+            .prefsAsrReady: "Ready",
+            .prefsAsrNotConfigured: "Not configured",
+            .prefsAsrCustomTitle: "Custom Volcengine Credentials",
+            .prefsAsrCustomHint: "Enter your own Volcengine ASR App ID and Access Token. Leave empty to use bundled credentials or Shandianshuo config.",
+            .prefsAsrSave: "Save Credentials",
+
+            .prefsDataPath: "Data Storage Path",
+            .prefsOpenDataFolder: "Open in Finder",
+            .prefsScriptStats: "Script Statistics",
+            .prefsScriptsTotal: "scripts",
+            .prefsScriptsRhythm: "with rhythm",
+            .prefsRecordings: "Recordings",
+            .prefsOpenRecordings: "Open Recordings Folder",
+            .prefsOpenLog: "Open Log File",
         ],
 
         .ja: [
@@ -375,6 +548,8 @@ final class L10n {
             .tooltipNextLine: "次の文  ↓",
             .tooltipEditScript: "原稿を編集  ⌘E",
             .tooltipSwitchScript: "原稿を切替  ⌘O",
+            .tooltipCaptureProtect: "録画保護：非表示",
+            .tooltipCaptureVisible: "録画保護：表示中",
             .tooltipPreferences: "環境設定  ⌘,",
 
             .promptTapToStart: "● を押して録音開始",
@@ -410,9 +585,9 @@ final class L10n {
             .prefsFontSize: "文字サイズ",
             .prefsOpacity: "透明度",
             .prefsAccentColor: "アクセントカラー",
-            .prefsAccentAmber: "アンバー",
+            .prefsAccentAmber: "バイオレット",
             .prefsAccentBlue: "ブルー",
-            .prefsAccentGreen: "グリーン",
+            .prefsAccentGreen: "ローズ",
             .prefsAllowCapture: "画面録画にこのウィンドウを写す",
             .prefsAllowCaptureHint: "既定オフ — このウィンドウは録画に映りません",
             .prefsDone: "完了",
@@ -445,6 +620,59 @@ final class L10n {
 
             .defaultScriptTitle: "最初の録音",
             .untitledScript: "無題",
+
+            .editorWindowTitle: "原稿を編集",
+            .editorAllScripts: "全原稿",
+            .editorTitlePlaceholder: "原稿タイトル",
+            .editorLines: "行",
+            .editorChars: "文字",
+            .editorHasRhythm: "リズムあり",
+            .editorNoRhythm: "リズム未生成",
+            .editorDeleteConfirm: "この原稿を削除しますか？",
+
+            .aboutTitle: "MyPace · Preview",
+            .aboutTagline: "動画クリエイターのための見えないテレプロンプター",
+            .aboutVersion: "バージョン",
+            .aboutCopyright: "© 2026 MyPace Team",
+            .aboutPrivacy: "全データはローカルのみに保存。クラウドには上がりません。",
+
+            .errorMicDenied: "マイクへのアクセスが拒否されました。\n\nシステム設定 → プライバシーとセキュリティ → マイク で MyPace Preview を有効にして再起動してください。",
+            .errorNoSpeech: "録音に音声が検出されませんでした。\nマイクに近づいて再度お試しください。",
+            .errorRhythmMissing: "リズムマップがまだありません。先に録音してリズムを生成してください。",
+
+            .micStatusTitle: "マイク権限状態：%@",
+            .micStatusDenied: "拒否されている場合：\nシステム設定 → プライバシーとセキュリティ → マイク で MyPace Preview を有効にしてください。",
+            .micStatusNotAsked: "未確認の場合、下の「権限を要求」を押してください。",
+            .micStatusRequestPerm: "権限を要求",
+            .micStatusOpenSettings: "システム設定を開く",
+            .micStatusClose: "閉じる",
+
+            .deleteScriptConfirm: "削除しますか？",
+            .deleteScriptInfo: "「%@」は完全に削除されます。",
+
+            .prefsTabVisual: "外観",
+            .prefsTabASR: "音声認識",
+            .prefsTabData: "データ",
+
+            .prefsAsrSectionTitle: "音声認識（ASR）設定",
+            .prefsAsrCurrentSource: "現在の認証情報ソース",
+            .prefsAsrSourceCustom: "カスタム",
+            .prefsAsrSourceShandian: "シャンディエンシュオ",
+            .prefsAsrSourceBundled: "内蔵",
+            .prefsAsrReady: "準備完了",
+            .prefsAsrNotConfigured: "未設定",
+            .prefsAsrCustomTitle: "カスタム Volcengine 認証情報",
+            .prefsAsrCustomHint: "独自の Volcengine ASR App ID と Access Token を入力。空欄の場合は内蔵認証情報を使用。",
+            .prefsAsrSave: "認証情報を保存",
+
+            .prefsDataPath: "データ保存パス",
+            .prefsOpenDataFolder: "Finder で開く",
+            .prefsScriptStats: "原稿統計",
+            .prefsScriptsTotal: "件の原稿",
+            .prefsScriptsRhythm: "件リズム付き",
+            .prefsRecordings: "録音ファイル",
+            .prefsOpenRecordings: "録音フォルダを開く",
+            .prefsOpenLog: "ログファイルを開く",
         ],
     ]
 }

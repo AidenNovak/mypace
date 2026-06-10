@@ -56,8 +56,8 @@ final class UserSettings {
 
     var accentColor: AccentColor {
         get {
-            let raw = defaults.string(forKey: Key.accentColor) ?? AccentColor.amber.rawValue
-            return AccentColor(rawValue: raw) ?? .amber
+            let raw = defaults.string(forKey: Key.accentColor) ?? AccentColor.violet.rawValue
+            return AccentColor(rawValue: raw) ?? .violet
         }
         set { defaults.set(newValue.rawValue, forKey: Key.accentColor) }
     }
@@ -99,23 +99,23 @@ final class UserSettings {
 // MARK: - 色彩主题
 
 enum AccentColor: String, CaseIterable {
-    case amber   = "amber"      // 经典橙
-    case cream   = "cream"      // 米白
-    case green   = "green"      // 薄荷绿
+    case violet = "violet"    // 蓝紫（默认，与图标一致）
+    case cyan   = "cyan"      // 青蓝
+    case rose   = "rose"      // 玫瑰粉
 
     var color: NSColor {
         switch self {
-        case .amber:  NSColor(red: 1.0, green: 0.69, blue: 0.29, alpha: 1)
-        case .cream:  NSColor(red: 1.0, green: 0.94, blue: 0.82, alpha: 1)
-        case .green:  NSColor(red: 0.55, green: 0.83, blue: 0.62, alpha: 1)
+        case .violet: NSColor(red: 0.45, green: 0.35, blue: 0.95, alpha: 1)
+        case .cyan:   NSColor(red: 0.30, green: 0.70, blue: 0.95, alpha: 1)
+        case .rose:   NSColor(red: 0.90, green: 0.40, blue: 0.60, alpha: 1)
         }
     }
 
     var label: String {
         switch self {
-        case .amber:  "琥珀"
-        case .cream:  "米白"
-        case .green:  "薄荷"
+        case .violet: "蓝紫"
+        case .cyan:   "青蓝"
+        case .rose:   "玫瑰"
         }
     }
 }

@@ -1,15 +1,8 @@
 //
-//  MyPacePreview.swift  · v0.2
-//  ====================================================
-//  MyPace 公开预览版 v0.2
-//  ====================================================
-//  这一版能让 vlogger 体验完整核心功能：
-//    1. 浮动透明窗口 + ScreenCaptureKit 排除（v0.1 已有）
-//    2. 多稿件管理（JSON 存储）
-//    3. 录音（AVAudioEngine → 16kHz mono WAV）
-//    4. 火山引擎 ASR（用闪电说的凭证）
-//    5. 节奏映射 → 按时间戳自动滚动
-//    6. 阶段切换：编辑稿件 / 练习录音 / 节奏播放
+//  MyPacePreview.swift
+//  MyPace Preview
+//
+//  主窗口 + 应用入口
 //
 
 import Cocoa
@@ -115,15 +108,14 @@ class PreviewApp: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         setupMenu()
 
-        print("─────────────────────────────────────────────")
-        print("MyPace · Preview Edition v0.2")
-        print("─────────────────────────────────────────────")
-        print("数据目录: \(FileManager.default.homeDirectoryForCurrentUser.path)/Library/Application Support/MyPacePreview")
+        logInfo("─────────────────────────────────────────────")
+        logInfo("MyPace Preview v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?")")
+        logInfo("─────────────────────────────────────────────")
+        logInfo("Data dir: \(ScriptStore.dataDirectoryPath)")
         let cred = ASRCredentials.auto()
-        let source = ASRCredentials.fromUserDefaults() != nil ? "自定义" :
-                     (ASRCredentials.fromShandianshuo() != nil ? "闪电说" : "内置")
-        print("ASR 凭证: 已加载 (\(source) · app_id: \(cred.appID))")
-        print("─────────────────────────────────────────────")
+        let source = ASRCredentials.fromUserDefaults() != nil ? "custom" :
+                     (ASRCredentials.fromShandianshuo() != nil ? "shandianshuo" : "bundled")
+        logInfo("ASR credentials: \(source) (app_id: \(cred.appID))")
     }
 
     func windowWillClose(_ notification: Notification) {
@@ -180,10 +172,7 @@ class PreviewApp: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     @objc func showAbout() {
-        let alert = NSAlert()
-        alert.messageText = "MyPace · Preview"
-        alert.informativeText = "© MyPace Team"
-        alert.runModal()
+        AboutWindow.present()
     }
 
     @objc func showPreferences() {
@@ -236,19 +225,11 @@ class PreviewApp: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     @objc func showMicStatus() {
         let alert = NSAlert()
-        alert.messageText = "麦克风权限状态：\(RecordingService.microphonePermissionStatus)"
-        alert.informativeText = """
-        如果显示「已拒绝」，需要去：
-        系统设置 → 隐私与安全 → 麦克风 → 勾选「MyPace Preview」。
-
-        如果显示「未询问」，点下面「请求权限」会弹原生申请框。
-
-        数据文件夹：\(ScriptStore.dataDirectoryPath)
-        日志：\(MyPaceLogger.logPath)
-        """
-        alert.addButton(withTitle: "请求权限")
-        alert.addButton(withTitle: "打开系统设置")
-        alert.addButton(withTitle: "关闭")
+        alert.messageText = String(format: L(.micStatusTitle), RecordingService.microphonePermissionStatus)
+        alert.informativeText = "\(L(.micStatusDenied))\n\n\(L(.micStatusNotAsked))\n\n\(L(.micStatusDenied))\n\n\(ScriptStore.dataDirectoryPath)\n\(MyPaceLogger.logPath)"
+        alert.addButton(withTitle: L(.micStatusRequestPerm))
+        alert.addButton(withTitle: L(.micStatusOpenSettings))
+        alert.addButton(withTitle: L(.micStatusClose))
         let r = alert.runModal()
         if r == .alertFirstButtonReturn {
             Task {
@@ -312,6 +293,7 @@ final class PreviewContentView: NSView {
     private let toolNew = ToolbarMiniButton(systemSymbol: "plus", tooltip: L(.menuNewScript))
     private let toolEdit = ToolbarMiniButton(systemSymbol: "square.and.pencil", tooltip: L(.tooltipEditScript))
     private let toolSwitch = ToolbarMiniButton(systemSymbol: "square.stack", tooltip: L(.tooltipSwitchScript))
+    private let toolCapture = ToolbarMiniButton(systemSymbol: "eye.slash", tooltip: L(.tooltipCaptureProtect))
     private let toolPrefs = ToolbarMiniButton(systemSymbol: "slider.horizontal.3", tooltip: L(.tooltipPreferences))
     private var toolStack: NSStackView!
 
@@ -357,6 +339,7 @@ final class PreviewContentView: NSView {
         toolEdit.toolTip = L(.tooltipEditScript)
         toolSwitch.toolTip = L(.tooltipSwitchScript)
         toolPrefs.toolTip = L(.tooltipPreferences)
+        updateCaptureButton()
         // 重建菜单
         (NSApp.delegate as? PreviewApp)?.setupMenu()
     }
@@ -396,7 +379,7 @@ final class PreviewContentView: NSView {
         ])
 
         // -- 右上角工具按钮 --
-        toolStack = NSStackView(views: [toolNew, toolEdit, toolSwitch, toolPrefs])
+        toolStack = NSStackView(views: [toolNew, toolEdit, toolSwitch, toolCapture, toolPrefs])
         toolStack.orientation = .horizontal
         toolStack.spacing = 4
         toolStack.translatesAutoresizingMaskIntoConstraints = false
@@ -404,7 +387,9 @@ final class PreviewContentView: NSView {
         toolNew.target = self;    toolNew.action = #selector(toolNewTapped)
         toolEdit.target = self;   toolEdit.action = #selector(toolEditTapped)
         toolSwitch.target = self; toolSwitch.action = #selector(toolSwitchTapped)
+        toolCapture.target = self; toolCapture.action = #selector(toolCaptureTapped)
         toolPrefs.target = self;  toolPrefs.action = #selector(toolPrefsTapped)
+        updateCaptureButton()
 
         // -- 顶部 bar --
         topBar.translatesAutoresizingMaskIntoConstraints = false
@@ -674,7 +659,7 @@ final class PreviewContentView: NSView {
         // 错误用 alert 提示
         if case .error(let msg) = new {
             let alert = NSAlert()
-            alert.messageText = "出错了"
+            alert.messageText = L(.alertAsrFailed)
             alert.informativeText = msg
             alert.alertStyle = .warning
             alert.runModal()
@@ -1026,90 +1011,58 @@ final class PreviewContentView: NSView {
     @objc func toolNewTapped()    { newScript() }
     @objc func toolEditTapped()   { editScript() }
     @objc func toolSwitchTapped() { switchScript() }
+    @objc func toolCaptureTapped() {
+        UserSettings.shared.allowScreenCapture.toggle()
+        let on = UserSettings.shared.allowScreenCapture
+        window?.sharingType = on ? .readWrite : .none
+        updateCaptureButton()
+        logInfo("[capture] screen capture \(on ? "allowed" : "blocked")")
+    }
     @objc func toolPrefsTapped() {
         PreferencesWindow.present { [weak self] in self?.applySettings() }
     }
 
+    private func updateCaptureButton() {
+        let on = UserSettings.shared.allowScreenCapture
+        let symbol = on ? "eye" : "eye.slash"
+        if #available(macOS 11.0, *) {
+            toolCapture.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)?
+                .withSymbolConfiguration(.init(pointSize: 13, weight: .medium))
+        }
+        toolCapture.toolTip = on ? L(.tooltipCaptureVisible) : L(.tooltipCaptureProtect)
+        toolCapture.contentTintColor = on
+            ? NSColor.white.withAlphaComponent(0.55)
+            : NSColor(red: 0.45, green: 0.35, blue: 0.95, alpha: 0.9)
+    }
+
     func editScript() {
-        let alert = NSAlert()
-        alert.messageText = "编辑稿件"
-        alert.informativeText = "标题 + 内容（每行一句话）"
-
-        let container = NSView(frame: NSRect(x: 0, y: 0, width: 460, height: 320))
-
-        let titleField = NSTextField(frame: NSRect(x: 0, y: 280, width: 460, height: 28))
-        titleField.stringValue = currentScript.title
-        titleField.font = .systemFont(ofSize: 13, weight: .semibold)
-        container.addSubview(titleField)
-
-        let scroll = NSScrollView(frame: NSRect(x: 0, y: 0, width: 460, height: 270))
-        scroll.hasVerticalScroller = true
-        let textView = NSTextView(frame: scroll.contentView.bounds)
-        textView.autoresizingMask = [.width]
-        textView.font = .systemFont(ofSize: 13)
-        textView.string = currentScript.lines.joined(separator: "\n")
-        scroll.documentView = textView
-        container.addSubview(scroll)
-
-        alert.accessoryView = container
-        alert.addButton(withTitle: "保存")
-        alert.addButton(withTitle: "取消")
-
-        if alert.runModal() == .alertFirstButtonReturn {
-            var s = currentScript
-            s.title = titleField.stringValue.isEmpty ? "未命名" : titleField.stringValue
-            s.lines = textView.string.split(separator: "\n").map(String.init).filter { !$0.isEmpty }
-            // 内容变了，已有节奏作废
-            if s.lines != currentScript.lines {
-                s.rhythm = nil
-            }
-            currentScript = s
-            currentIndex = 0
-            updateStageLabel()
-            updateBottomHint()
+        ScriptEditorWindow.present(script: currentScript) { [weak self] updated in
+            guard let self else { return }
+            self.currentScript = updated
+            self.currentIndex = 0
+            self.updateStageLabel()
+            self.updateBottomHint()
         }
     }
 
     func switchScript() {
-        let scripts = ScriptStore.shared.scripts
-        guard !scripts.isEmpty else { return }
-
-        let alert = NSAlert()
-        alert.messageText = "切换稿件"
-        alert.informativeText = "共 \(scripts.count) 个稿件"
-
-        let popup = NSPopUpButton(frame: NSRect(x: 0, y: 0, width: 320, height: 28))
-        for (i, s) in scripts.enumerated() {
-            let mark = s.hasRhythm ? " ●" : ""
-            popup.addItem(withTitle: "\(s.title)\(mark)")
-            if s.id == currentScript.id { popup.selectItem(at: i) }
-        }
-        alert.accessoryView = popup
-        alert.addButton(withTitle: "切换")
-        alert.addButton(withTitle: "新建稿件")
-        alert.addButton(withTitle: "取消")
-
-        let response = alert.runModal()
-        if response == .alertFirstButtonReturn {
-            let idx = popup.indexOfSelectedItem
-            if scripts.indices.contains(idx) {
-                currentScript = scripts[idx]
-                currentIndex = 0
-                setStage(.ready)
-            }
-        } else if response == .alertSecondButtonReturn {
-            // 用户点了“新建稿件”
-            newScript()
+        // Open editor window directly — sidebar handles switching
+        ScriptEditorWindow.present(script: currentScript) { [weak self] updated in
+            guard let self else { return }
+            self.currentScript = updated
+            self.currentIndex = 0
+            self.updateStageLabel()
+            self.updateBottomHint()
         }
     }
 
     func deleteScript() {
         let alert = NSAlert()
-        alert.messageText = "确认删除？"
-        alert.informativeText = "「\(currentScript.title)」将被永久删除。"
+        alert.messageText = L(.deleteScriptConfirm)
+        alert.informativeText = String(format: L(.deleteScriptInfo), currentScript.title)
         alert.alertStyle = .warning
-        alert.addButton(withTitle: "删除")
-        alert.addButton(withTitle: "取消")
+        alert.addButton(withTitle: L(.dialogDelete))
+        alert.addButton(withTitle: L(.dialogCancel))
         if alert.runModal() == .alertFirstButtonReturn {
             ScriptStore.shared.delete(currentScript)
             currentScript = ScriptStore.shared.scripts.first ?? Script(title: "未命名")
@@ -1134,7 +1087,7 @@ final class PreviewContentView: NSView {
             let granted = await RecordingService.requestMicrophonePermission()
             logInfo("[practice] mic permission = \(granted)")
             if !granted {
-                self.setStage(.error("麦克风权限被拒绝。\n\n请到 系统设置 → 隐私与安全 → 麦克风 → 勾选「MyPace Preview」，然后重启 app。"))
+                self.setStage(.error(L(.errorMicDenied)))
                 return
             }
             let url = ScriptStore.shared.newRecordingURL()
@@ -1145,7 +1098,7 @@ final class PreviewContentView: NSView {
 
     func playRhythm() {
         guard let rhythm = currentScript.rhythm else {
-            setStage(.error("当前稿件还没有节奏映射。先按 ⇧⌘R 录一次音生成节奏。"))
+            setStage(.error(L(.errorRhythmMissing)))
             return
         }
         playback.reset()
@@ -1175,7 +1128,7 @@ final class PreviewContentView: NSView {
 
             // 空 ASR 结果保护
             guard !segments.isEmpty else {
-                setStage(.error("识别失败：录音里没有检测到语音。\n请检查麦克风是否离嘴近一点，或者重试。"))
+                setStage(.error(L(.errorNoSpeech)))
                 return
             }
 
@@ -1213,7 +1166,7 @@ final class PreviewContentView: NSView {
 
         } catch {
             logError("[ASR] failed: \(error.localizedDescription)")
-            setStage(.error("节奏对齐失败：\n\(error.localizedDescription)"))
+            setStage(.error("\(L(.alertAsrFailed))\n\(error.localizedDescription)"))
         }
     }
 }
@@ -1229,5 +1182,142 @@ struct AppLauncher {
         app.delegate = delegate
         app.setActivationPolicy(.regular)
         app.run()
+    }
+}
+
+// MARK: - About Window
+
+@MainActor
+final class AboutWindow: NSWindow {
+
+    static var current: AboutWindow?
+
+    static func present() {
+        if let win = current {
+            win.makeKeyAndOrderFront(nil)
+            return
+        }
+
+        let win = AboutWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 360, height: 300),
+            styleMask: [.titled, .closable, .fullSizeContentView],
+            backing: .buffered,
+            defer: false
+        )
+        win.title = L(.aboutTitle)
+        win.titlebarAppearsTransparent = true
+        win.isMovableByWindowBackground = true
+        win.center()
+        win.isReleasedWhenClosed = false
+
+        let content = AboutContentView()
+        win.contentView = content
+
+        AboutWindow.current = win
+        win.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+}
+
+final class AboutContentView: NSView {
+
+    init() {
+        super.init(frame: NSRect(x: 0, y: 0, width: 360, height: 300))
+        setupUI()
+    }
+    required init?(coder: NSCoder) { fatalError() }
+
+    private func setupUI() {
+        wantsLayer = true
+        layer?.backgroundColor = NSColor(white: 0.08, alpha: 1.0).cgColor
+
+        // Gradient top bar matching app icon
+        let topBg = NSView(frame: NSRect(x: 0, y: 200, width: 360, height: 100))
+        topBg.wantsLayer = true
+        let gradient = CAGradientLayer()
+        gradient.colors = [
+            NSColor(red: 0.30, green: 0.50, blue: 0.95, alpha: 1.0).cgColor,
+            NSColor(red: 0.55, green: 0.25, blue: 0.95, alpha: 1.0).cgColor
+        ]
+        gradient.startPoint = CGPoint(x: 0, y: 1)
+        gradient.endPoint = CGPoint(x: 1, y: 0)
+        gradient.frame = topBg.bounds
+        topBg.layer?.insertSublayer(gradient, at: 0)
+        topBg.autoresizingMask = [.width]
+        addSubview(topBg)
+
+        // App icon
+        let iconSize: CGFloat = 64
+        let icon = NSImageView(frame: NSRect(x: (360 - iconSize) / 2, y: 18, width: iconSize, height: iconSize))
+        if let img = NSApp.applicationIconImage {
+            icon.image = img
+            icon.imageScaling = .scaleProportionallyUpOrDown
+        }
+        icon.wantsLayer = true
+        icon.layer?.cornerRadius = 14
+        icon.layer?.masksToBounds = true
+        icon.layer?.shadowColor = NSColor.black.cgColor
+        icon.layer?.shadowOpacity = 0.3
+        icon.layer?.shadowRadius = 6
+        icon.layer?.shadowOffset = CGSize(width: 0, height: 2)
+        topBg.addSubview(icon)
+
+        // Title
+        let title = NSTextField(labelWithString: "MyPace")
+        title.font = .systemFont(ofSize: 20, weight: .bold)
+        title.textColor = .white
+        title.alignment = .center
+        title.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(title)
+
+        // Tagline
+        let tagline = NSTextField(labelWithString: L(.aboutTagline))
+        tagline.font = .systemFont(ofSize: 12, weight: .regular)
+        tagline.textColor = NSColor(white: 1, alpha: 0.5)
+        tagline.alignment = .center
+        tagline.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(tagline)
+
+        // Version
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        let versionLabel = NSTextField(labelWithString: "\(L(.aboutVersion)) \(version)")
+        versionLabel.font = .monospacedSystemFont(ofSize: 11, weight: .medium)
+        versionLabel.textColor = NSColor(red: 0.45, green: 0.35, blue: 0.95, alpha: 1)
+        versionLabel.alignment = .center
+        versionLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(versionLabel)
+
+        // Privacy
+        let privacy = NSTextField(labelWithString: L(.aboutPrivacy))
+        privacy.font = .systemFont(ofSize: 11, weight: .regular)
+        privacy.textColor = NSColor(white: 1, alpha: 0.3)
+        privacy.alignment = .center
+        privacy.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(privacy)
+
+        // Copyright
+        let copyLabel = NSTextField(labelWithString: L(.aboutCopyright))
+        copyLabel.font = .systemFont(ofSize: 10, weight: .regular)
+        copyLabel.textColor = NSColor(white: 1, alpha: 0.25)
+        copyLabel.alignment = .center
+        copyLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(copyLabel)
+
+        NSLayoutConstraint.activate([
+            title.topAnchor.constraint(equalTo: topAnchor, constant: 218),
+            title.centerXAnchor.constraint(equalTo: centerXAnchor),
+
+            tagline.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 4),
+            tagline.centerXAnchor.constraint(equalTo: centerXAnchor),
+
+            versionLabel.topAnchor.constraint(equalTo: tagline.bottomAnchor, constant: 14),
+            versionLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+
+            privacy.topAnchor.constraint(equalTo: versionLabel.bottomAnchor, constant: 14),
+            privacy.centerXAnchor.constraint(equalTo: centerXAnchor),
+
+            copyLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+            copyLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+        ])
     }
 }

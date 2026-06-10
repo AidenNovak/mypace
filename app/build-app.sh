@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# build-app.sh · MyPace v0.8
+# build-app.sh · MyPace v1.0
 # ==================================================
 # 把 Preview/*.swift 打包成 .app + .dmg
 # 支持两种模式：
@@ -22,7 +22,7 @@ set -e
 
 APP_NAME="MyPace Preview"
 BUNDLE_ID="ai.mypace.preview"
-VERSION="0.9.2"
+VERSION="1.0.0"
 BUILD_DIR="build"
 APP_DIR="$BUILD_DIR/${APP_NAME}.app"
 DMG_NAME="MyPace-Preview-${VERSION}.dmg"
@@ -56,6 +56,7 @@ xcrun -sdk macosx swiftc \
   Preview/RhythmPlayback.swift \
   Preview/WelcomeWindow.swift \
   Preview/PreferencesWindow.swift \
+  Preview/ScriptEditorWindow.swift \
   Preview/ControlBar.swift \
   Preview/WordRunView.swift \
   Preview/MyPacePreview.swift \

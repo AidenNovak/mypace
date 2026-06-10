@@ -88,8 +88,8 @@ final class WelcomeContent: NSView {
         topBg.wantsLayer = true
         let gradient = CAGradientLayer()
         gradient.colors = [
-            NSColor(red: 1.0, green: 0.69, blue: 0.29, alpha: 1.0).cgColor,
-            NSColor(red: 0.95, green: 0.42, blue: 0.06, alpha: 1.0).cgColor
+            NSColor(red: 0.30, green: 0.50, blue: 0.95, alpha: 1.0).cgColor,
+            NSColor(red: 0.55, green: 0.25, blue: 0.95, alpha: 1.0).cgColor
         ]
         gradient.startPoint = CGPoint(x: 0, y: 1)
         gradient.endPoint = CGPoint(x: 1, y: 0)
