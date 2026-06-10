@@ -4,7 +4,7 @@
 
 | 目录 | 来源 | 说明 |
 |------|------|------|
-| `MyPace-Swift/` | 原 `~/MyPace-Swift/` | Claude 开发 v1.1 时的临时工作区，源码已合并到 `app-v11-xcode/` |
+| `MyPace-Swift/` | 原 `~/MyPace-Swift/` | 早期 v1.1 尝试的工作区（SwiftUI 骨架，已废弃） |
 | `MyPace-Prototype/` | 原 `~/MyPace-Prototype/` | 早期原型，含旧版 DMG 和文档 |
 | `mypace-old-prd-backup/` | 原 `~/mypace-old-prd-backup/` | 早期 PRD 和设计稿归档 |
 

@@ -8,22 +8,15 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
-### Planned — v1.1 App Store
-- [ ] 安装 Xcode + `xcodegen generate` 验证 v1.1 工程
-- [ ] 注册 Apple Developer Program ($99/年)
-- [ ] App 图标设计（macOS 标准多尺寸）
-- [ ] App Store Connect 配置 + 截图
-- [ ] PrivacyInfo.xcprivacy 隐私清单
-- [ ] StoreKit 2 内购（¥128 一次性购买）
-- [ ] 沙盒权限申明（Microphone / Screen Recording / File Access）
-- [ ] Notarization + 提交审核
+### 方向调整（2026-05）
+- 移除不完整的 `app-v11-xcode/`（SwiftUI + SwiftData 骨架，核心节奏引擎未实现）
+- 决定全力保留并打磨 v0.8（AppKit + 纯 swiftc 构建）
+  - v0.8 已具备 RhythmPlayback 30Hz 引擎、逐字 CATextLayer 高亮、口述模式（空脚本 ASR 自动生成稿件）
+  - 先走 DMG 公测验证核心价值，再评估是否需要 App Store 版本
 
-### Planned — v1.1 功能
-- [ ] 全局快捷键（⌘N、⇧⌘R、Space 暂停）
-- [ ] 浮动窗口拖拽 + 大小记忆
-- [ ] 节奏同步滚动算法（按时间戳推进高亮）
-- [ ] 错误处理：网络失败 / ASR 超时 / 权限被拒
-- [ ] 首次启动 3 步 onboarding
+### 发版策略
+- 专注自托管 DMG + notarization 公测（Track A）
+- App Store 作为后续选项（需时再启动沙盒化工作）
 
 ---
 
@@ -31,7 +24,6 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Monorepo 重构
 - 合并为 `mypace/` monorepo，统一管理 app / site / docs / verify
-- 新增 `app-v11-xcode/` — SwiftUI + SwiftData Xcode 工程骨架（未编译）
 - Cloudflare Pages 部署文档站：https://mypace-aaz.pages.dev/
 - GitHub Actions 自动部署 `site/**` 变更
 

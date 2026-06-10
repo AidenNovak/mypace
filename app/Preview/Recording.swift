@@ -68,9 +68,9 @@ final class RecordingService: NSObject {
     // MARK: - Public API
 
     func start(saveTo url: URL) {
-        guard state == .idle else {
-            logWarn("RecordingService.start ignored: state=\(state)")
-            return
+        if state != .idle {
+            logWarn("RecordingService.start: forcing reset from state=\(state)")
+            resetToIdle()
         }
 
         let outURL = url.deletingPathExtension().appendingPathExtension("wav")
@@ -159,6 +159,23 @@ final class RecordingService: NSObject {
     private func setState(_ new: State) {
         state = new
         onStateChange?(new)
+
+        // 终端状态交付后立即重置为 idle，允许下一次新建录音
+        if case .finished = new {
+            Task { @MainActor in self.resetToIdle() }
+        } else if case .failed = new {
+            Task { @MainActor in self.resetToIdle() }
+        }
+    }
+
+    private func resetToIdle() {
+        recorder?.stop()
+        levelTimer?.invalidate()
+        levelTimer = nil
+        recorder = nil
+        startedAt = nil
+        outputURL = nil
+        state = .idle
     }
 
     private func updateLevel() {

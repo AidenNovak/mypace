@@ -27,11 +27,6 @@ mypace/
 │   ├── UPDATES.md        版本历史
 │   └── VLOGGER-README.md vlogger 安装指南（DMG 内附）
 │
-├── app-v11-xcode/      v1.1 Xcode 工程骨架（沙盒 + App Store 准备，未启用）
-│   ├── App/ Models/ Services/ Theme/ Views/
-│   ├── MyPace.entitlements
-│   └── project.yml       XcodeGen 配置
-│
 ├── site/               文档站（Cloudflare Pages 部署根目录）
 │   ├── index.html        macOS Tahoe 风 + 三语 marketing landing
 │   ├── shots/            7 张精致 v0.8 截图
@@ -53,7 +48,7 @@ mypace/
 │   └── verify_control.swift        UI 控件实验
 │
 ├── archive/            归档目录（不再活跃开发的旧版本和工作区）
-│   ├── MyPace-Swift/     Claude 开发 v1.1 时的临时工作区（源码已合并到 app-v11-xcode）
+│   ├── MyPace-Swift/     早期 v1.1 尝试的工作区（已废弃）
 │   ├── MyPace-Prototype/ 早期原型
 │   └── mypace-old-prd-backup/  早期 PRD 归档
 │
@@ -133,16 +128,21 @@ swiftc verify_spike.swift -o verify_spike && ./verify_spike
 - ✅ 窗口可拖拽 resize
 - ✅ 文档站（macOS Tahoe 风 + 真实截图 + 三语）
 - ⏸ Apple Developer ID 签名 + Notarization（待证书）
-- ⏸ App Store 上架（需要 v1.1 Xcode 工程）
+- ⏸ App Store 上架（公测验证后再评估）
 
 ---
 
 ## 发版路径
 
-详见 `app/ROADMAP.md`。两条 track：
+详见 `app/ROADMAP.md`。
 
-1. **Track A · 公测分发**（自托管 DMG，5 天内）：注册 Apple Developer → notarize → 部署 Cloudflare Pages
-2. **Track B · App Store 上架**（3–4 周）：装 Xcode → 工程化 `app-v11-xcode/` → 沙盒兼容 → 提交审核
+**当前策略**：专注 Track A（自托管 DMG 公测）。
+
+- 注册 Apple Developer →  hardened runtime + notarize → 通过 Cloudflare Pages 分发 DMG
+- 先验证核心价值（节奏同步 + 逐字高亮 + 口述模式）是否打动真实 vlogger
+- App Store（Track B）作为后续选项，待产品验证后再评估是否值得做沙盒 + 正式上架流程
+
+（历史：曾尝试 `app-v11-xcode/` 作为 SwiftUI + 沙盒版本，因核心引擎未完成已移除）
 
 ---
 
@@ -150,7 +150,7 @@ swiftc verify_spike.swift -o verify_spike && ./verify_spike
 
 | 层 | 选型 |
 |---|---|
-| UI | Swift + AppKit + CoreAnimation（不用 SwiftUI，保留 v1.1 备选） |
+| UI | Swift + AppKit + CoreAnimation（极致控制节奏滚动与逐字动画） |
 | 录音 | `AVAudioRecorder`（16 kHz mono WAV）|
 | ASR | 火山引擎 v3（big-model + `show_words` + `enable_word_time_offset`） |
 | 字级渲染 | `CATextLayer` per character |

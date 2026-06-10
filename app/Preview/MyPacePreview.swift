@@ -89,8 +89,13 @@ class PreviewApp: NSObject, NSApplicationDelegate, NSWindowDelegate {
         win.contentView?.wantsLayer = true
         win.contentView?.layer?.cornerRadius = 16
         win.contentView?.layer?.masksToBounds = true
-        win.minSize = NSSize(width: 520, height: 348)    // 320 + 28 titlebar
-        win.maxSize = NSSize(width: 2400, height: 1628)
+        // 尽可能给用户最大调整自由度
+        // 极小：可以缩到迷你提示条级别
+        // 极大：可以拉满整个显示器
+        win.minSize = NSSize(width: 160, height: 90)
+        win.maxSize = NSSize(width: 5000, height: 5000)
+        // 移除高度上限，让用户可以自由把窗口拉得很高（提词器常用需求）
+        win.maxSize = NSSize(width: 3000, height: 4000)
         win.alphaValue = UserSettings.shared.opacity
 
         win.level = .statusBar
@@ -204,12 +209,14 @@ class PreviewApp: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @objc func playRhythm()   { contentView?.playRhythm() }
 
     @objc func increaseFontMenu() {
-        UserSettings.shared.currentFontSize = min(64, UserSettings.shared.currentFontSize + 2)
+        UserSettings.shared.currentFontSize = min(78, UserSettings.shared.currentFontSize + 2)
         contentView?.applySettings()
+        contentView?.needsLayout = true
     }
     @objc func decreaseFontMenu() {
         UserSettings.shared.currentFontSize = max(14, UserSettings.shared.currentFontSize - 2)
         contentView?.applySettings()
+        contentView?.needsLayout = true
     }
 
     @objc func openDataFolder() {
@@ -301,7 +308,8 @@ final class PreviewContentView: NSView {
     private let bottomHint = NSTextField(labelWithString: "")
     private let controlBar = ControlBar(frame: .zero)
 
-    // 右上角工具按钮组 (编辑 / 切换稿件 / 偏好)
+    // 右上角工具按钮组 (新建 / 编辑 / 切换稿件 / 偏好)
+    private let toolNew = ToolbarMiniButton(systemSymbol: "plus", tooltip: L(.menuNewScript))
     private let toolEdit = ToolbarMiniButton(systemSymbol: "square.and.pencil", tooltip: L(.tooltipEditScript))
     private let toolSwitch = ToolbarMiniButton(systemSymbol: "square.stack", tooltip: L(.tooltipSwitchScript))
     private let toolPrefs = ToolbarMiniButton(systemSymbol: "slider.horizontal.3", tooltip: L(.tooltipPreferences))
@@ -388,11 +396,12 @@ final class PreviewContentView: NSView {
         ])
 
         // -- 右上角工具按钮 --
-        toolStack = NSStackView(views: [toolEdit, toolSwitch, toolPrefs])
+        toolStack = NSStackView(views: [toolNew, toolEdit, toolSwitch, toolPrefs])
         toolStack.orientation = .horizontal
         toolStack.spacing = 4
         toolStack.translatesAutoresizingMaskIntoConstraints = false
         addSubview(toolStack)
+        toolNew.target = self;    toolNew.action = #selector(toolNewTapped)
         toolEdit.target = self;   toolEdit.action = #selector(toolEditTapped)
         toolSwitch.target = self; toolSwitch.action = #selector(toolSwitchTapped)
         toolPrefs.target = self;  toolPrefs.action = #selector(toolPrefsTapped)
@@ -508,17 +517,23 @@ final class PreviewContentView: NSView {
             progressBarFill.bottomAnchor.constraint(equalTo: progressBar.bottomAnchor),
             progressFillWidthConstraint,
 
-            // text stack —— 放在 topBar 下方与 controlBar 上方之间，保留显式间距
+            // text stack —— 给主要阅读区域更多垂直空间
             stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 32),
             stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -32),
-            stack.topAnchor.constraint(greaterThanOrEqualTo: topBar.bottomAnchor, constant: 16),
-            stack.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -10),
+            stack.topAnchor.constraint(greaterThanOrEqualTo: topBar.bottomAnchor, constant: 20),
+            stack.bottomAnchor.constraint(lessThanOrEqualTo: controlBar.topAnchor, constant: -32),
 
-            // control bar —— 跟稿件文字保留至少 24 px 间距
+            // 让 stack 在垂直方向上尽量占满可用空间（优先级稍低于必须的边距）
+            {
+                let c = stack.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -6)
+                c.priority = .defaultHigh
+                return c
+            }(),
+
+            // control bar —— 固定在底部，保留最小间距
             controlBar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
             controlBar.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14),
             controlBar.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -36),
-            controlBar.topAnchor.constraint(greaterThanOrEqualTo: stack.bottomAnchor, constant: 24),
 
             // hint —— 放在 controlBar 之下，留 8 px 间距，自适应底边
             bottomHint.topAnchor.constraint(equalTo: controlBar.bottomAnchor, constant: 8),
@@ -534,6 +549,43 @@ final class PreviewContentView: NSView {
             s.seek(toIndex: min(s.currentScript.lines.count - 1, s.currentIndex + 1))
         }
     }
+
+    override func layout() {
+        super.layout()
+
+        let h = bounds.height
+
+        // 高度变化时，触发字体自适应
+        if abs(h - lastLayoutHeight) > 6 {
+            lastLayoutHeight = h
+            updateContent()
+            currentRun.needsLayout = true
+        }
+
+        // 极小窗口时优化观感（给用户最大自由度）
+        if h < 160 {
+            // 缩小圆角
+            layer?.cornerRadius = max(6, h / 20)
+
+            // 极小窗口时隐藏次要元素，保留核心阅读区 + 控制条
+            let shouldHideSecondary = h < 130
+            topBar.alphaValue = shouldHideSecondary ? 0.0 : 1.0
+            levelBar.alphaValue = shouldHideSecondary ? 0.0 : levelBar.alphaValue
+            progressBar.alphaValue = shouldHideSecondary ? 0.0 : progressBar.alphaValue
+            stageLabel.alphaValue = shouldHideSecondary ? 0.0 : 1.0
+            titleLabel.alphaValue = shouldHideSecondary ? 0.0 : 1.0
+            recDot.alphaValue = shouldHideSecondary ? 0.0 : 1.0
+        } else {
+            // 恢复正常状态
+            layer?.cornerRadius = 16
+            topBar.alphaValue = 1.0
+            stageLabel.alphaValue = 1.0
+            titleLabel.alphaValue = 1.0
+            recDot.alphaValue = 1.0
+        }
+    }
+
+    private var lastLayoutHeight: CGFloat = 0
 
     /// 主按钮的智能动作：根据当前 stage 决定做什么
     private func primaryAction() {
@@ -766,12 +818,13 @@ final class PreviewContentView: NSView {
             // 用 WordRunView 字级渲染
             currentLabel.attributedStringValue = styledCurrent("", wordIdx: -1)    // 清空 label
             currentLabel.isHidden = false    // 仍占位（高度需要）
+            let effSize = effectiveFontSize()
             currentLabel.attributedStringValue = NSAttributedString(string: line(i), attributes: [
-                .font: NSFont.systemFont(ofSize: UserSettings.shared.currentFontSize, weight: .semibold),
+                .font: NSFont.systemFont(ofSize: effSize, weight: .semibold),
                 .foregroundColor: NSColor.clear    // 透明，占空间但不显示
             ])
             currentRun.isHidden = false
-            currentRun.fontSize = UserSettings.shared.currentFontSize
+            currentRun.fontSize = effSize
             currentRun.accentColor = UserSettings.shared.accentColor.color
             currentRun.setWords(words.map(\.text), currentIdx: currentWordIndex)
         } else {
@@ -787,7 +840,7 @@ final class PreviewContentView: NSView {
         if text.isEmpty { return NSAttributedString(string: " ") }
 
         let settings = UserSettings.shared
-        let currentSize = settings.currentFontSize
+        let currentSize = effectiveFontSize()
         let accent = settings.accentColor.color
 
         let para = NSMutableParagraphStyle()
@@ -845,14 +898,29 @@ final class PreviewContentView: NSView {
         return currentScript.lines[i]
     }
 
+    /// 根据窗口高度计算当前应该使用的字号（在用户设置基础上轻微缩放）
+    private func effectiveFontSize() -> CGFloat {
+        let base = UserSettings.shared.currentFontSize
+        let h = max(320, bounds.height)
+
+        // 参考高度 720pt 时 = 1.0 倍
+        let referenceHeight: CGFloat = 720
+        let rawScale = h / referenceHeight
+
+        // 限制缩放范围，避免极端情况
+        let scale = min(max(rawScale, 0.72), 1.65)
+
+        return max(14, min(92, base * scale))
+    }
+
     private enum LineStyle { case past, current, next, future }
 
     private func styled(_ text: String, _ style: LineStyle) -> NSAttributedString {
         if text.isEmpty { return NSAttributedString(string: " ") }
         let settings = UserSettings.shared
-        let currentSize = settings.currentFontSize
-        let pastSize = max(11, currentSize * 0.5)
-        let nextSize = max(13, currentSize * 0.58)
+        let currentSize = effectiveFontSize()
+        let pastSize = max(11, currentSize * 0.52)
+        let nextSize = max(13, currentSize * 0.60)
         let accentColor = settings.accentColor.color
 
         let font: NSFont
@@ -955,6 +1023,7 @@ final class PreviewContentView: NSView {
     }
 
     // 右上角工具按钮 actions —— 简单转发给已有方法
+    @objc func toolNewTapped()    { newScript() }
     @objc func toolEditTapped()   { editScript() }
     @objc func toolSwitchTapped() { switchScript() }
     @objc func toolPrefsTapped() {
@@ -1017,15 +1086,20 @@ final class PreviewContentView: NSView {
         }
         alert.accessoryView = popup
         alert.addButton(withTitle: "切换")
+        alert.addButton(withTitle: "新建稿件")
         alert.addButton(withTitle: "取消")
 
-        if alert.runModal() == .alertFirstButtonReturn {
+        let response = alert.runModal()
+        if response == .alertFirstButtonReturn {
             let idx = popup.indexOfSelectedItem
             if scripts.indices.contains(idx) {
                 currentScript = scripts[idx]
                 currentIndex = 0
                 setStage(.ready)
             }
+        } else if response == .alertSecondButtonReturn {
+            // 用户点了“新建稿件”
+            newScript()
         }
     }
 

@@ -1,6 +1,14 @@
-# MyPace · MVP 第二阶段交付
+# MyPace · MVP 第二阶段交付（历史存档）
 
-> 2026-05-23 · 在你装 Xcode 之前我能做的全部都做完了
+> ⚠️ **注意**：本文档主要记录 2026-05 期间尝试转向 SwiftUI + Xcode 工程（v1.1 骨架）的过程。该尝试已废弃，相关目录已清理。
+>
+> 当前活跃开发以 `app/Preview/`（AppKit + swiftc 构建）为主，请优先参考根目录 README 和 `app/ROADMAP.md`。
+
+---
+
+## 历史内容（v1.1 尝试期间，2026-05-23）
+
+> 2026-05-23 · 在你装 Xcode 之前我能做的全部都做完了（原文档）
 
 ---
 
@@ -28,16 +36,14 @@
 ## 当前完整工程
 
 ```text
-~/MyPace-Swift/
-├── README.md
-├── ROADMAP.md
-├── UPDATES.md                      ← 你正在读的这个
-├── project.yml                     ← XcodeGen 配置
-├── verify_spike.swift              ← ScreenCaptureKit 排除验证 spike
-├── verify_spike (binary, 93K)      ← ✨ 编译产物，能直接跑
-├── verify_control.swift
-├── verify_control (binary, 91K)    ← 对照组编译产物
-└── Sources/
+app/ (v0.8 活跃目录)
+├── Preview/          核心 13 个 Swift 文件（AppKit 实现）
+├── Resources/
+├── build-app.sh      一键构建脚本
+└── ... 
+```
+
+（历史：早期开发曾使用 `~/MyPace-Swift/` 作为临时工作区，已清理）
     ├── App/                        (125 行 · 2 个文件)
     │   ├── MyPaceApp.swift
     │   └── AppDelegate.swift

@@ -4,7 +4,8 @@
 
 set -e
 
-cd ~/MyPace-Swift
+# 假设从 mypace 仓库根目录或 app/ 目录运行
+cd "$(dirname "$0")/.." 2>/dev/null || cd ..
 
 # 1. 杀掉旧 app
 pkill -f MyPacePreview 2>/dev/null || true
