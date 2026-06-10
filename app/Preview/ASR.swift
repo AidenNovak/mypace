@@ -1,6 +1,6 @@
 //
 //  ASR.swift
-//  MyPace Preview v0.2
+//  MyPace Preview
 //
 //  火山引擎 ASR · v3 大模型录音文件识别
 //  已端到端验证（2026-05-23）

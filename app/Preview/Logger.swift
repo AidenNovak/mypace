@@ -1,6 +1,6 @@
 //
 //  Logger.swift
-//  MyPace Preview v0.5
+//  MyPace Preview
 //
 //  日志写到 ~/Library/Logs/MyPacePreview.log
 //  方便用户和我快速诊断问题

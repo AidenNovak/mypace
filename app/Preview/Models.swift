@@ -1,6 +1,6 @@
 //
 //  Models.swift
-//  MyPace Preview v0.2
+//  MyPace Preview
 //
 //  Codable 数据模型 —— 全部用 JSON 持久化（不需要 SwiftData，因此不需要 Xcode）
 //

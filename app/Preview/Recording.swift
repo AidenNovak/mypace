@@ -1,8 +1,8 @@
 //
 //  Recording.swift
-//  MyPace Preview v0.5
+//  MyPace Preview
 //
-//  录音 service —— 改用 AVAudioRecorder（v0.4 之前用 AVAudioEngine 录到 0 字节，bug）
+//  录音 service —— AVAudioRecorder（16kHz mono WAV）
 //
 //  AVAudioRecorder：
 //    + 简单可靠，直接写 16kHz mono Int16 WAV

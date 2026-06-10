@@ -1,6 +1,6 @@
 //
 //  WordRunView.swift
-//  MyPace Preview v0.7
+//  MyPace Preview
 //
 //  字级跟读视图 —— 每个字独立 CATextLayer。
 //  当前字 scale(1.05) 不抖（因为 transform 不影响其他 layer 的 frame）。

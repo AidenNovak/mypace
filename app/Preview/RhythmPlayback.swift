@@ -1,6 +1,6 @@
 //
 //  RhythmPlayback.swift
-//  MyPace Preview v0.2
+//  MyPace Preview
 //
 //  按节奏映射自动滚动 —— MyPace 的核心差异化
 //  每 100ms 检查时间戳，决定当前应该高亮哪一句

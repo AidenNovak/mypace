@@ -1,6 +1,6 @@
 //
 //  ScriptStore.swift
-//  MyPace Preview v0.2
+//  MyPace Preview
 //
 //  脚本持久化 —— JSON 存到 ~/Library/Application Support/MyPacePreview/scripts/
 //  比 SwiftData 简单 100 倍，零依赖。

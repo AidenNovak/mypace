@@ -1,6 +1,6 @@
 //
 //  WelcomeWindow.swift
-//  MyPace Preview v0.3
+//  MyPace Preview
 //
 //  首次启动欢迎页 —— 3 步介绍核心价值
 //

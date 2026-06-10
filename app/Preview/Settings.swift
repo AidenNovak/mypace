@@ -1,6 +1,6 @@
 //
 //  Settings.swift
-//  MyPace Preview v0.3
+//  MyPace Preview
 //
 //  用户偏好 —— 字号、透明度、文字颜色等
 //  存到 UserDefaults

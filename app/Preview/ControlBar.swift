@@ -1,6 +1,6 @@
 //
 //  ControlBar.swift
-//  MyPace Preview v0.4
+//  MyPace Preview
 //
 //  浮窗底部的"明显按钮组" —— 替代键盘快捷键，对 vlogger 友好。
 //  按 stage 动态切换按钮。
